@@ -8,7 +8,7 @@ RUN pip install --no-cache-dir --upgrade pip setuptools>=75 wheel
 # Copy project files and install
 COPY pyproject.toml .
 COPY src/ src/
-RUN pip install --no-cache-dir .
+RUN pip install --no-cache-dir --no-build-isolation .
 
 # Copy remaining files (config, etc.)
 COPY . .
