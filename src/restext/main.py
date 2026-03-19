@@ -39,3 +39,31 @@ app.include_router(router, prefix="/v1")
 @app.get("/health")
 async def health():
     return {"status": "ok"}
+
+
+@app.post("/bootstrap")
+async def bootstrap():
+    """One-time setup: creates the first account and API key. Fails if an account already exists."""
+    import hashlib
+    import secrets
+    from restext.models.base import async_session
+    from restext.models.account import Account
+    from restext.models.api_key import ApiKey
+    from sqlalchemy import select, func
+
+    async with async_session() as db:
+        count = await db.scalar(select(func.count()).select_from(Account))
+        if count and count > 0:
+            return {"error": "Already bootstrapped. Delete /bootstrap after first use."}
+
+        account = Account(name="admin", email="admin@humuter.com", plan="pro")
+        db.add(account)
+        await db.flush()
+
+        raw_key = f"rst_live_{secrets.token_urlsafe(32)}"
+        key_hash = hashlib.sha256(raw_key.encode()).hexdigest()
+        api_key = ApiKey(key_hash=key_hash, key_prefix=raw_key[:16], account_id=account.id)
+        db.add(api_key)
+        await db.commit()
+
+        return {"api_key": raw_key, "account_id": str(account.id)}
