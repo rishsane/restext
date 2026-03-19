@@ -2,17 +2,15 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Upgrade pip and install build tools
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir "setuptools>=75" wheel
+# Install dependencies from requirements.txt (bypasses pyproject.toml build system)
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy and install dependencies
-COPY pyproject.toml .
-COPY src/ src/
-RUN pip install --no-cache-dir --no-build-isolation .
-
-# Copy remaining files
+# Copy source code
 COPY . .
+
+# Install the package in editable mode
+ENV PYTHONPATH=/app/src
 
 EXPOSE 8000
 
