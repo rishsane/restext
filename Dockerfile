@@ -2,15 +2,16 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Install build dependencies
-RUN pip install --no-cache-dir --upgrade pip setuptools>=75 wheel
+# Upgrade pip and install build tools
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir "setuptools>=75" wheel
 
-# Copy project files and install
+# Copy and install dependencies
 COPY pyproject.toml .
 COPY src/ src/
 RUN pip install --no-cache-dir --no-build-isolation .
 
-# Copy remaining files (config, etc.)
+# Copy remaining files
 COPY . .
 
 EXPOSE 8000
