@@ -18,8 +18,9 @@ _client = None
 def _get_client():
     global _client
     if _client is None:
-        if settings.qdrant_path:
-            _client = AsyncQdrantClient(path=settings.qdrant_path)
+        qdrant_path = getattr(settings, 'qdrant_path', '')
+        if qdrant_path:
+            _client = AsyncQdrantClient(path=qdrant_path)
         else:
             _client = AsyncQdrantClient(url=settings.qdrant_url, timeout=30)
     return _client
