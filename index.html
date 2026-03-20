@@ -138,9 +138,123 @@
 
     /* Settings key input */
     .key-reveal { font-family: monospace; font-size: 13px; word-break: break-all; background: #0a0a0a; padding: 10px; border-radius: 6px; border: 1px solid #222; color: #888; }
+
+    /* Onboarding */
+    .onboarding-overlay { position: fixed; inset: 0; background: #0a0a0a; z-index: 200; display: flex; align-items: center; justify-content: center; }
+    .onboarding-overlay.hidden { display: none; }
+    .onboarding-card { width: 520px; max-width: 90vw; }
+    .onboarding-card h2 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+    .onboarding-card .subtitle { font-size: 15px; color: #888; margin-bottom: 32px; line-height: 1.6; }
+    .onboarding-progress { display: flex; gap: 6px; margin-bottom: 32px; }
+    .onboarding-progress .step { flex: 1; height: 4px; border-radius: 2px; background: #222; }
+    .onboarding-progress .step.done { background: #f97316; }
+    .onboarding-progress .step.current { background: #f97316; opacity: 0.5; }
+    .ob-form { display: flex; flex-direction: column; gap: 14px; }
+    .ob-form input, .ob-form textarea, .ob-form select { width: 100%; padding: 12px 14px; background: #111; border: 1px solid #222; border-radius: 10px; color: #e5e5e5; font-size: 14px; outline: none; font-family: inherit; }
+    .ob-form input:focus, .ob-form textarea:focus { border-color: #f97316; }
+    .ob-form textarea { resize: vertical; min-height: 80px; }
+    .ob-actions { display: flex; gap: 10px; margin-top: 8px; }
+    .ob-actions .btn { flex: 1; justify-content: center; }
+    .ob-success { text-align: center; padding: 20px 0; }
+    .ob-success .checkmark { width: 60px; height: 60px; border-radius: 50%; background: rgba(34,197,94,0.1); border: 2px solid #22c55e; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 28px; }
+    .ob-code { background: #111; border: 1px solid #222; border-radius: 10px; padding: 16px; font-family: 'SF Mono', monospace; font-size: 12px; line-height: 1.8; text-align: left; overflow-x: auto; color: #aaa; margin: 16px 0; }
+    .ob-code .kw { color: #c084fc; }
+    .ob-code .str { color: #34d399; }
+    .ob-code .cmt { color: #555; }
   </style>
 </head>
 <body>
+  <!-- Onboarding Wizard -->
+  <div class="onboarding-overlay" id="onboardingOverlay">
+    <div class="onboarding-card">
+      <div class="onboarding-progress">
+        <div class="step done" id="obStep1"></div>
+        <div class="step" id="obStep2"></div>
+        <div class="step" id="obStep3"></div>
+        <div class="step" id="obStep4"></div>
+      </div>
+
+      <!-- Step 1: API Key -->
+      <div id="obView1">
+        <h2>Welcome to Restext</h2>
+        <p class="subtitle">Let's get your context engine running. First, enter your API key.</p>
+        <div class="ob-form">
+          <div>
+            <label style="font-size:12px;color:#666;display:block;margin-bottom:6px;">API URL</label>
+            <input type="text" id="obApiUrl" value="https://restext-production.up.railway.app" />
+          </div>
+          <div>
+            <label style="font-size:12px;color:#666;display:block;margin-bottom:6px;">API Key</label>
+            <input type="password" id="obApiKey" placeholder="rst_live_..." />
+          </div>
+          <p style="font-size:12px;color:#555;">Don't have a key? <a href="/" style="color:#f97316;" target="_blank">Sign up here</a></p>
+          <div class="ob-actions">
+            <button class="btn btn-ghost" onclick="skipOnboarding()">Skip</button>
+            <button class="btn btn-primary" onclick="obConnect()" id="obConnectBtn">Connect</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Create Project -->
+      <div id="obView2" style="display:none;">
+        <h2>Create your first project</h2>
+        <p class="subtitle">A project is a knowledge container. Each AI agent or product gets its own project.</p>
+        <div class="ob-form">
+          <div>
+            <label style="font-size:12px;color:#666;display:block;margin-bottom:6px;">Project Name</label>
+            <input type="text" id="obProjectName" placeholder="e.g. My Docs Bot, Support Agent" />
+          </div>
+          <div class="ob-actions">
+            <button class="btn btn-ghost" onclick="obBack(1)">Back</button>
+            <button class="btn btn-primary" onclick="obCreateProject()" id="obCreateBtn">Create Project</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Add Source -->
+      <div id="obView3" style="display:none;">
+        <h2>Add your first source</h2>
+        <p class="subtitle">Give your agent something to know about. Paste a URL or some text content.</p>
+        <div class="ob-form">
+          <div class="tabs" style="margin-bottom:4px;">
+            <button class="tab active" onclick="obSwitchSource('url', this)">URL</button>
+            <button class="tab" onclick="obSwitchSource('text', this)">Text</button>
+          </div>
+          <div id="obSrcUrl">
+            <input type="url" id="obSourceUrl" placeholder="https://docs.yourapp.com" />
+          </div>
+          <div id="obSrcText" style="display:none;">
+            <input type="text" id="obSourceTitle" placeholder="Title" style="margin-bottom:8px;" />
+            <textarea id="obSourceContent" placeholder="Paste your content here..."></textarea>
+          </div>
+          <div class="ob-actions">
+            <button class="btn btn-ghost" onclick="obBack(2)">Back</button>
+            <button class="btn btn-primary" onclick="obAddSource()" id="obAddBtn">Add Source</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: Done -->
+      <div id="obView4" style="display:none;">
+        <div class="ob-success">
+          <div class="checkmark">&#10003;</div>
+          <h2>You're all set!</h2>
+          <p class="subtitle">Your source is being indexed. Here's how to query it from your code:</p>
+          <div class="ob-code">
+<span class="kw">import</span> requests<br><br>
+res = requests.post(<span class="str">"<span id="obCodeUrl"></span>/v1/projects/<span id="obCodePid"></span>/query"</span>,<br>
+&nbsp;&nbsp;headers={<span class="str">"Authorization"</span>: <span class="str">"Bearer <span id="obCodeKey">rst_live_...</span>"</span>},<br>
+&nbsp;&nbsp;json={<span class="str">"query"</span>: <span class="str">"How does X work?"</span>})<br><br>
+context = res.json()[<span class="str">"context_text"</span>]  <span class="cmt"># inject into your LLM</span>
+          </div>
+          <div class="ob-actions">
+            <button class="btn btn-primary" onclick="finishOnboarding()" style="flex:1;">Open Dashboard</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="app">
     <!-- Sidebar -->
     <div class="sidebar">
@@ -394,10 +508,24 @@
     let currentSourceType = 'text';
     let sourceRefreshInterval = null;
 
+    let obProjectId = null;
+    let obSourceType = 'url';
+
     // ===== Init =====
     document.getElementById('settingsApiUrl').value = apiUrl;
     document.getElementById('settingsApiKey').value = apiKey;
-    if (apiKey) connect();
+
+    // Show onboarding if no API key saved, otherwise connect
+    if (!apiKey || !localStorage.getItem('restext_onboarded')) {
+      document.getElementById('onboardingOverlay').classList.remove('hidden');
+      if (apiKey) {
+        document.getElementById('obApiKey').value = apiKey;
+        document.getElementById('obApiUrl').value = apiUrl;
+      }
+    } else {
+      document.getElementById('onboardingOverlay').classList.add('hidden');
+      connect();
+    }
 
     // ===== API Helper =====
     function api(path, opts = {}) {
@@ -777,6 +905,129 @@
       if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
       if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
       return Math.floor(diff / 86400) + 'd ago';
+    }
+
+    // ===== Onboarding =====
+    function obSetStep(n) {
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById('obStep' + i).className = 'step' + (i < n ? ' done' : i === n ? ' current' : '');
+        document.getElementById('obView' + i).style.display = i === n ? 'block' : 'none';
+      }
+    }
+
+    function obBack(step) { obSetStep(step); }
+
+    function skipOnboarding() {
+      document.getElementById('onboardingOverlay').classList.add('hidden');
+      if (!apiKey) navigate('settings');
+    }
+
+    async function obConnect() {
+      const url = document.getElementById('obApiUrl').value.replace(/\/$/, '');
+      const key = document.getElementById('obApiKey').value.trim();
+      if (!key) { alert('Enter your API key'); return; }
+
+      const btn = document.getElementById('obConnectBtn');
+      btn.disabled = true; btn.textContent = 'Connecting...';
+
+      try {
+        const h = await fetch(url + '/health');
+        if (!h.ok) throw new Error();
+
+        const res = await fetch(url + '/v1/projects', {
+          headers: { 'Authorization': 'Bearer ' + key },
+        });
+        if (!res.ok) { alert('Invalid API key'); return; }
+
+        // Save credentials
+        apiUrl = url; apiKey = key;
+        localStorage.setItem('restext_url', url);
+        localStorage.setItem('restext_key', key);
+        document.getElementById('settingsApiUrl').value = url;
+        document.getElementById('settingsApiKey').value = key;
+        document.getElementById('statusDot').classList.add('connected');
+        document.getElementById('connectionLabel').textContent = 'Connected';
+
+        const existingProjects = await res.json();
+        if (existingProjects.length > 0) {
+          // Already has projects — skip to dashboard
+          localStorage.setItem('restext_onboarded', '1');
+          document.getElementById('onboardingOverlay').classList.add('hidden');
+          projects = existingProjects;
+          renderProjects();
+          return;
+        }
+
+        obSetStep(2);
+      } catch {
+        alert('Cannot reach server');
+      } finally {
+        btn.disabled = false; btn.textContent = 'Connect';
+      }
+    }
+
+    async function obCreateProject() {
+      const name = document.getElementById('obProjectName').value.trim();
+      if (!name) { alert('Enter a project name'); return; }
+
+      const btn = document.getElementById('obCreateBtn');
+      btn.disabled = true; btn.textContent = 'Creating...';
+
+      try {
+        const res = await api('/v1/projects', { method: 'POST', body: JSON.stringify({ name }) });
+        if (!res.ok) { alert('Failed to create project'); return; }
+        const proj = await res.json();
+        obProjectId = proj.id;
+        obSetStep(3);
+      } finally {
+        btn.disabled = false; btn.textContent = 'Create Project';
+      }
+    }
+
+    function obSwitchSource(type, el) {
+      obSourceType = type;
+      el.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('obSrcUrl').style.display = type === 'url' ? 'block' : 'none';
+      document.getElementById('obSrcText').style.display = type === 'text' ? 'block' : 'none';
+    }
+
+    async function obAddSource() {
+      const btn = document.getElementById('obAddBtn');
+      btn.disabled = true; btn.textContent = 'Adding...';
+
+      try {
+        let body;
+        if (obSourceType === 'url') {
+          const url = document.getElementById('obSourceUrl').value.trim();
+          if (!url) { alert('Enter a URL'); return; }
+          body = { type: 'url', url };
+        } else {
+          const title = document.getElementById('obSourceTitle').value.trim();
+          const content = document.getElementById('obSourceContent').value.trim();
+          if (!content) { alert('Enter some content'); return; }
+          body = { type: 'text', title: title || 'First source', content };
+        }
+
+        const res = await api('/v1/projects/' + obProjectId + '/sources', {
+          method: 'POST', body: JSON.stringify(body),
+        });
+        if (!res.ok) { alert('Failed to add source'); return; }
+
+        // Fill in code snippet
+        document.getElementById('obCodeUrl').textContent = apiUrl;
+        document.getElementById('obCodePid').textContent = obProjectId;
+        document.getElementById('obCodeKey').textContent = apiKey.slice(0, 20) + '...';
+        obSetStep(4);
+      } finally {
+        btn.disabled = false; btn.textContent = 'Add Source';
+      }
+    }
+
+    function finishOnboarding() {
+      localStorage.setItem('restext_onboarded', '1');
+      document.getElementById('onboardingOverlay').classList.add('hidden');
+      connect();
     }
   </script>
 </body>
