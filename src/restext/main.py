@@ -14,6 +14,15 @@ async def lifespan(app: FastAPI):
     from restext.models.base import Base
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+    # Test Qdrant connection
+    try:
+        from restext.services.vectorstore import _client
+        collections = await _client.get_collections()
+        print(f"[STARTUP] Qdrant connected: {len(collections.collections)} collections", flush=True)
+    except Exception as e:
+        print(f"[STARTUP] Qdrant connection FAILED: {type(e).__name__}: {e}", flush=True)
+
     yield
     await engine.dispose()
 
