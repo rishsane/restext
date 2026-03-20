@@ -27,3 +27,21 @@ class SourceResponse(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class DiscoverRequest(BaseModel):
+    mode: str = "topic"  # "topic" or "url"
+    topic: str | None = None
+    url: str | None = None
+    max_results: int = 10
+
+
+class DiscoveredUrl(BaseModel):
+    url: str
+    title: str | None = None
+    source_id: uuid.UUID | None = None
+
+
+class DiscoverResponse(BaseModel):
+    discovered: list[DiscoveredUrl]
+    message: str

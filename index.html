@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restext Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #e5e5e5; min-height: 100vh; }
+
+    /* Layout */
+    .app { display: flex; min-height: 100vh; }
+    .sidebar { width: 240px; background: #111; border-right: 1px solid #1e1e1e; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 10; }
+    .main { flex: 1; margin-left: 240px; }
+
+    /* Sidebar */
+    .sidebar-header { padding: 20px; border-bottom: 1px solid #1e1e1e; }
+    .sidebar-header h1 { font-size: 18px; font-weight: 700; }
+    .sidebar-header p { font-size: 12px; color: #555; margin-top: 2px; }
+    .sidebar-nav { padding: 12px; flex: 1; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; font-size: 14px; color: #888; cursor: pointer; transition: all 0.15s; border: none; background: none; width: 100%; text-align: left; }
+    .nav-item:hover { background: #1a1a1a; color: #ccc; }
+    .nav-item.active { background: #1a1a1a; color: #f97316; }
+    .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+    .sidebar-footer { padding: 16px; border-top: 1px solid #1e1e1e; }
+    .connection-status { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #555; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #333; flex-shrink: 0; }
+    .status-dot.connected { background: #22c55e; }
+
+    /* Top bar */
+    .topbar { padding: 16px 28px; border-bottom: 1px solid #1e1e1e; display: flex; align-items: center; justify-content: space-between; }
+    .topbar h2 { font-size: 16px; font-weight: 600; }
+    .topbar-actions { display: flex; gap: 8px; }
+
+    /* Content */
+    .content { padding: 28px; }
+
+    /* Cards */
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px; }
+    .stat-card { background: #111; border: 1px solid #1e1e1e; border-radius: 12px; padding: 20px; }
+    .stat-card .label { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .stat-card .value { font-size: 28px; font-weight: 700; }
+    .stat-card .sub { font-size: 12px; color: #555; margin-top: 4px; }
+
+    .panel { background: #111; border: 1px solid #1e1e1e; border-radius: 12px; margin-bottom: 20px; }
+    .panel-header { padding: 16px 20px; border-bottom: 1px solid #1e1e1e; display: flex; align-items: center; justify-content: space-between; }
+    .panel-header h3 { font-size: 14px; font-weight: 600; }
+    .panel-body { padding: 16px 20px; }
+
+    /* Table */
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 12px; border-bottom: 1px solid #1e1e1e; font-weight: 600; }
+    td { padding: 12px; border-bottom: 1px solid #0e0e0e; font-size: 13px; color: #ccc; }
+    tr:hover td { background: #0d0d0d; }
+
+    /* Buttons */
+    .btn { padding: 8px 14px; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-primary { background: #f97316; color: #fff; }
+    .btn-primary:hover { background: #ea580c; }
+    .btn-ghost { background: transparent; color: #888; border: 1px solid #222; }
+    .btn-ghost:hover { background: #1a1a1a; color: #ccc; }
+    .btn-danger { background: transparent; color: #ef4444; border: 1px solid #3a1515; }
+    .btn-danger:hover { background: #1a0a0a; }
+    .btn-sm { padding: 5px 10px; font-size: 12px; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Badge */
+    .badge { padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .badge-ready { background: #052e16; color: #22c55e; }
+    .badge-pending, .badge-crawling, .badge-indexing, .badge-processing { background: #1c1917; color: #f97316; }
+    .badge-error { background: #2c0b0b; color: #ef4444; }
+
+    /* Forms */
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 12px; color: #666; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px; }
+    .form-input { width: 100%; padding: 10px 12px; background: #0a0a0a; border: 1px solid #222; border-radius: 8px; color: #e5e5e5; font-size: 14px; outline: none; font-family: inherit; }
+    .form-input:focus { border-color: #f97316; }
+    textarea.form-input { resize: vertical; min-height: 80px; }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 2px; margin-bottom: 16px; background: #0a0a0a; border-radius: 8px; padding: 3px; }
+    .tab { padding: 7px 16px; border-radius: 6px; font-size: 13px; cursor: pointer; background: transparent; color: #666; border: none; font-family: inherit; }
+    .tab.active { background: #1e1e1e; color: #e5e5e5; }
+
+    /* Modal */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: #111; border: 1px solid #222; border-radius: 14px; width: 480px; max-width: 90vw; max-height: 85vh; overflow-y: auto; }
+    .modal-header { padding: 20px; border-bottom: 1px solid #1e1e1e; display: flex; align-items: center; justify-content: space-between; }
+    .modal-header h3 { font-size: 16px; font-weight: 600; }
+    .modal-close { background: none; border: none; color: #555; cursor: pointer; font-size: 20px; padding: 4px; }
+    .modal-close:hover { color: #ccc; }
+    .modal-body { padding: 20px; }
+    .modal-footer { padding: 16px 20px; border-top: 1px solid #1e1e1e; display: flex; justify-content: flex-end; gap: 8px; }
+
+    /* Chart */
+    .chart-bar-container { display: flex; align-items: flex-end; gap: 4px; height: 120px; padding: 0 4px; }
+    .chart-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .chart-bar { width: 100%; min-width: 12px; background: #f97316; border-radius: 4px 4px 0 0; transition: height 0.3s; }
+    .chart-bar:hover { background: #fb923c; }
+    .chart-label { font-size: 9px; color: #444; white-space: nowrap; }
+    .chart-value { font-size: 9px; color: #888; }
+
+    /* Empty state */
+    .empty { text-align: center; padding: 40px 20px; color: #444; }
+    .empty p { font-size: 14px; margin-bottom: 16px; }
+
+    /* Loading */
+    .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #333; border-top-color: #f97316; border-radius: 50%; animation: spin 0.6s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Query playground */
+    .query-area { position: relative; }
+    .query-area textarea { width: 100%; padding: 14px 80px 14px 16px; background: #0a0a0a; border: 1px solid #222; border-radius: 10px; color: #e5e5e5; font-size: 14px; font-family: inherit; resize: none; outline: none; min-height: 52px; }
+    .query-area textarea:focus { border-color: #f97316; }
+    .query-area .send-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); }
+
+    .result-card { padding: 14px; background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 10px; margin-bottom: 10px; }
+    .result-card .score { color: #f97316; font-weight: 600; font-size: 13px; }
+    .result-card .source-label { color: #555; font-size: 12px; }
+    .result-card .chunk-text { font-size: 13px; line-height: 1.6; color: #bbb; margin-top: 8px; white-space: pre-wrap; }
+
+    /* Project cards */
+    .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .project-card { background: #111; border: 1px solid #1e1e1e; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.15s; }
+    .project-card:hover { border-color: #333; }
+    .project-card h4 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+    .project-card .meta { font-size: 12px; color: #555; display: flex; gap: 16px; }
+
+    /* Hide views */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #222; border-radius: 3px; }
+
+    /* Settings key input */
+    .key-reveal { font-family: monospace; font-size: 13px; word-break: break-all; background: #0a0a0a; padding: 10px; border-radius: 6px; border: 1px solid #222; color: #888; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h1>Restext</h1>
+        <p>Context Engine</p>
+      </div>
+      <div class="sidebar-nav">
+        <button class="nav-item active" onclick="navigate('projects')" data-view="projects">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Projects
+        </button>
+        <button class="nav-item" onclick="navigate('playground')" data-view="playground">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          Playground
+        </button>
+        <button class="nav-item" onclick="navigate('settings')" data-view="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          Settings
+        </button>
+      </div>
+      <div class="sidebar-footer">
+        <div class="connection-status">
+          <div class="status-dot" id="statusDot"></div>
+          <span id="connectionLabel">Disconnected</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="main">
+      <!-- ===== PROJECTS VIEW ===== -->
+      <div class="view active" id="view-projects">
+        <div class="topbar">
+          <h2>Projects</h2>
+          <div class="topbar-actions">
+            <button class="btn btn-primary" onclick="openModal('newProjectModal')">+ New Project</button>
+          </div>
+        </div>
+        <div class="content">
+          <div class="project-grid" id="projectGrid">
+            <div class="empty"><p>Loading projects...</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PROJECT DETAIL VIEW ===== -->
+      <div class="view" id="view-project-detail">
+        <div class="topbar">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <button class="btn btn-ghost btn-sm" onclick="navigate('projects')" style="padding:6px 8px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+            <h2 id="detailProjectName">Project</h2>
+          </div>
+          <div class="topbar-actions">
+            <button class="btn btn-ghost btn-sm" onclick="loadProjectDetail(currentProjectId)">Refresh</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteCurrentProject()">Delete Project</button>
+          </div>
+        </div>
+        <div class="content">
+          <!-- Stats -->
+          <div class="stat-grid" id="detailStats"></div>
+
+          <!-- Tabs: Sources | Analytics -->
+          <div class="tabs">
+            <button class="tab active" onclick="switchDetailTab('sources', this)">Sources</button>
+            <button class="tab" onclick="switchDetailTab('analytics', this)">Analytics</button>
+          </div>
+
+          <!-- Sources tab -->
+          <div id="detailTab-sources">
+            <div class="panel">
+              <div class="panel-header">
+                <h3>Sources</h3>
+                <button class="btn btn-primary btn-sm" onclick="openModal('addSourceModal')">+ Add Source</button>
+              </div>
+              <div class="panel-body" style="padding:0;">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Source</th>
+                      <th>Type</th>
+                      <th>Chunks</th>
+                      <th>Status</th>
+                      <th>Last Crawled</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="sourcesTableBody">
+                    <tr><td colspan="6" style="text-align:center;color:#444;padding:30px;">Loading...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Analytics tab -->
+          <div id="detailTab-analytics" style="display:none;">
+            <div class="stat-grid" id="analyticsStats"></div>
+            <div class="panel">
+              <div class="panel-header">
+                <h3>Queries per Day</h3>
+                <select id="analyticsDays" onchange="loadAnalytics()" style="background:#0a0a0a;border:1px solid #222;border-radius:6px;color:#ccc;padding:4px 8px;font-size:12px;">
+                  <option value="7">7 days</option>
+                  <option value="14">14 days</option>
+                  <option value="30" selected>30 days</option>
+                </select>
+              </div>
+              <div class="panel-body">
+                <div class="chart-bar-container" id="dailyChart">
+                  <div class="empty" style="width:100%;"><p>Loading...</p></div>
+                </div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-header"><h3>Recent Queries</h3></div>
+              <div class="panel-body" style="padding:0;">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Query</th>
+                      <th>Chunks</th>
+                      <th>Latency</th>
+                      <th>Time</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recentQueriesBody">
+                    <tr><td colspan="4" style="text-align:center;color:#444;padding:30px;">Loading...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PLAYGROUND VIEW ===== -->
+      <div class="view" id="view-playground">
+        <div class="topbar">
+          <h2>Playground</h2>
+          <div class="topbar-actions">
+            <select id="playgroundProject" onchange="loadPlaygroundSources()" style="background:#0a0a0a;border:1px solid #222;border-radius:8px;color:#ccc;padding:8px 12px;font-size:13px;">
+              <option value="">Select project...</option>
+            </select>
+          </div>
+        </div>
+        <div class="content">
+          <div class="query-area" style="margin-bottom:20px;">
+            <textarea id="playgroundQuery" placeholder="Ask a question about your sources..." rows="2" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();runPlaygroundQuery();}"></textarea>
+            <button class="btn btn-primary btn-sm send-btn" onclick="runPlaygroundQuery()" id="playgroundSearchBtn">Search</button>
+          </div>
+          <div id="playgroundResults">
+            <div class="empty"><p>Select a project and ask a question</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SETTINGS VIEW ===== -->
+      <div class="view" id="view-settings">
+        <div class="topbar"><h2>Settings</h2></div>
+        <div class="content">
+          <div class="panel">
+            <div class="panel-header"><h3>Connection</h3></div>
+            <div class="panel-body">
+              <div class="form-group">
+                <label>API URL</label>
+                <input class="form-input" type="text" id="settingsApiUrl" value="https://restext-production.up.railway.app" />
+              </div>
+              <div class="form-group">
+                <label>API Key</label>
+                <input class="form-input" type="password" id="settingsApiKey" placeholder="rst_live_..." />
+              </div>
+              <button class="btn btn-primary" onclick="saveSettings()" style="margin-top:8px;">Save & Connect</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Project Modal -->
+  <div class="modal-overlay" id="newProjectModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>New Project</h3>
+        <button class="modal-close" onclick="closeModal('newProjectModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Project Name</label>
+          <input class="form-input" type="text" id="newProjectName" placeholder="e.g. LayerEdge Docs" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('newProjectModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="createProject()">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Source Modal -->
+  <div class="modal-overlay" id="addSourceModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Source</h3>
+        <button class="modal-close" onclick="closeModal('addSourceModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="tabs" id="sourceTypeTabs">
+          <button class="tab active" onclick="switchSourceType('text', this)">Text</button>
+          <button class="tab" onclick="switchSourceType('url', this)">URL</button>
+          <button class="tab" onclick="switchSourceType('file', this)">File</button>
+        </div>
+        <div id="sourceForm-text">
+          <div class="form-group">
+            <label>Title</label>
+            <input class="form-input" type="text" id="srcTitle" placeholder="Source title" />
+          </div>
+          <div class="form-group">
+            <label>Content</label>
+            <textarea class="form-input" id="srcContent" placeholder="Paste your text content..." rows="6"></textarea>
+          </div>
+        </div>
+        <div id="sourceForm-url" style="display:none;">
+          <div class="form-group">
+            <label>URL</label>
+            <input class="form-input" type="url" id="srcUrl" placeholder="https://docs.example.com" />
+          </div>
+        </div>
+        <div id="sourceForm-file" style="display:none;">
+          <div class="form-group">
+            <label>File (.pdf, .txt, .md, .docx)</label>
+            <input class="form-input" type="file" id="srcFile" accept=".pdf,.txt,.md,.docx" style="padding:8px;" />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('addSourceModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="addSource()" id="addSourceBtn">Add Source</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== State =====
+    let apiUrl = localStorage.getItem('restext_url') || 'https://restext-production.up.railway.app';
+    let apiKey = localStorage.getItem('restext_key') || '';
+    let projects = [];
+    let currentProjectId = null;
+    let currentSourceType = 'text';
+    let sourceRefreshInterval = null;
+
+    // ===== Init =====
+    document.getElementById('settingsApiUrl').value = apiUrl;
+    document.getElementById('settingsApiKey').value = apiKey;
+    if (apiKey) connect();
+
+    // ===== API Helper =====
+    function api(path, opts = {}) {
+      return fetch(apiUrl + path, {
+        ...opts,
+        headers: {
+          'Authorization': 'Bearer ' + apiKey,
+          ...(opts.body && !(opts.body instanceof FormData) ? { 'Content-Type': 'application/json' } : {}),
+          ...opts.headers,
+        },
+      });
+    }
+
+    // ===== Connection =====
+    async function connect() {
+      try {
+        const h = await fetch(apiUrl + '/health');
+        if (!h.ok) throw new Error();
+        document.getElementById('statusDot').classList.add('connected');
+        document.getElementById('connectionLabel').textContent = 'Connected';
+        await loadProjects();
+      } catch {
+        document.getElementById('statusDot').classList.remove('connected');
+        document.getElementById('connectionLabel').textContent = 'Disconnected';
+      }
+    }
+
+    function saveSettings() {
+      apiUrl = document.getElementById('settingsApiUrl').value.replace(/\/$/, '');
+      apiKey = document.getElementById('settingsApiKey').value.trim();
+      localStorage.setItem('restext_url', apiUrl);
+      localStorage.setItem('restext_key', apiKey);
+      connect();
+      navigate('projects');
+    }
+
+    // ===== Navigation =====
+    function navigate(view) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById('view-' + view).classList.add('active');
+      const navBtn = document.querySelector(`[data-view="${view}"]`);
+      if (navBtn) navBtn.classList.add('active');
+
+      if (view === 'projects') loadProjects();
+      if (view === 'playground') populatePlaygroundSelect();
+    }
+
+    // ===== Modals =====
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    // ===== Projects =====
+    async function loadProjects() {
+      try {
+        const res = await api('/v1/projects');
+        if (!res.ok) return;
+        projects = await res.json();
+        renderProjects();
+      } catch {}
+    }
+
+    function renderProjects() {
+      const grid = document.getElementById('projectGrid');
+      if (projects.length === 0) {
+        grid.innerHTML = '<div class="empty"><p>No projects yet</p><button class="btn btn-primary" onclick="openModal(\'newProjectModal\')">Create your first project</button></div>';
+        return;
+      }
+      grid.innerHTML = projects.map(p => `
+        <div class="project-card" onclick="openProject('${p.id}')">
+          <h4>${esc(p.name)}</h4>
+          <div class="meta">
+            <span>${p.sources_count || 0} sources</span>
+            <span>${p.chunks_count || 0} chunks</span>
+            <span>Created ${timeAgo(p.created_at)}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function createProject() {
+      const name = document.getElementById('newProjectName').value.trim();
+      if (!name) return;
+      const res = await api('/v1/projects', { method: 'POST', body: JSON.stringify({ name }) });
+      if (res.ok) {
+        document.getElementById('newProjectName').value = '';
+        closeModal('newProjectModal');
+        await loadProjects();
+      }
+    }
+
+    // ===== Project Detail =====
+    async function openProject(id) {
+      currentProjectId = id;
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById('view-project-detail').classList.add('active');
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      await loadProjectDetail(id);
+    }
+
+    async function loadProjectDetail(id) {
+      try {
+        const [projRes, srcRes] = await Promise.all([
+          api('/v1/projects/' + id),
+          api('/v1/projects/' + id + '/sources'),
+        ]);
+        if (!projRes.ok) return;
+        const project = await projRes.json();
+        const sources = await srcRes.json();
+
+        document.getElementById('detailProjectName').textContent = project.name;
+        document.getElementById('detailStats').innerHTML = `
+          <div class="stat-card"><div class="label">Sources</div><div class="value">${project.sources_count || 0}</div></div>
+          <div class="stat-card"><div class="label">Chunks</div><div class="value">${project.chunks_count || 0}</div></div>
+          <div class="stat-card"><div class="label">Project ID</div><div class="value" style="font-size:13px;font-family:monospace;word-break:break-all;color:#888;">${id}</div></div>
+        `;
+
+        renderSourcesTable(sources);
+
+        // Auto-refresh if processing
+        if (sourceRefreshInterval) clearInterval(sourceRefreshInterval);
+        const processing = sources.some(s => ['pending', 'crawling', 'indexing', 'processing'].includes(s.status));
+        if (processing) {
+          sourceRefreshInterval = setInterval(() => loadSourcesOnly(id), 3000);
+        }
+      } catch {}
+    }
+
+    async function loadSourcesOnly(id) {
+      try {
+        const res = await api('/v1/projects/' + id + '/sources');
+        if (!res.ok) return;
+        const sources = await res.json();
+        renderSourcesTable(sources);
+        const processing = sources.some(s => ['pending', 'crawling', 'indexing', 'processing'].includes(s.status));
+        if (!processing && sourceRefreshInterval) {
+          clearInterval(sourceRefreshInterval);
+          sourceRefreshInterval = null;
+        }
+      } catch {}
+    }
+
+    function renderSourcesTable(sources) {
+      const body = document.getElementById('sourcesTableBody');
+      if (sources.length === 0) {
+        body.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#444;padding:30px;">No sources yet. Click "+ Add Source" to get started.</td></tr>';
+        return;
+      }
+      body.innerHTML = sources.map(s => {
+        const name = s.url || s.file_name || 'Text source';
+        const short = name.length > 50 ? name.slice(0, 50) + '...' : name;
+        const badgeClass = 'badge-' + s.status;
+        const crawled = s.last_crawled_at ? timeAgo(s.last_crawled_at) : '—';
+        return `<tr>
+          <td title="${esc(name)}">${esc(short)}</td>
+          <td>${s.source_type}</td>
+          <td>${s.chunk_count}</td>
+          <td><span class="badge ${badgeClass}">${s.status}</span>${s.error_message ? '<br><span style="font-size:11px;color:#ef4444;">' + esc(s.error_message).slice(0, 60) + '</span>' : ''}</td>
+          <td>${crawled}</td>
+          <td>
+            <div style="display:flex;gap:4px;">
+              <button class="btn btn-ghost btn-sm" onclick="recrawlSource('${s.id}')">Recrawl</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteSource('${s.id}')">Delete</button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    async function deleteSource(sourceId) {
+      if (!confirm('Delete this source and all its chunks?')) return;
+      await api('/v1/projects/' + currentProjectId + '/sources/' + sourceId, { method: 'DELETE' });
+      loadProjectDetail(currentProjectId);
+    }
+
+    async function recrawlSource(sourceId) {
+      await api('/v1/projects/' + currentProjectId + '/sources/' + sourceId + '/recrawl', { method: 'POST' });
+      loadProjectDetail(currentProjectId);
+    }
+
+    async function deleteCurrentProject() {
+      if (!confirm('Delete this project and ALL its sources?')) return;
+      await api('/v1/projects/' + currentProjectId, { method: 'DELETE' });
+      navigate('projects');
+    }
+
+    // ===== Detail Tabs =====
+    function switchDetailTab(tab, el) {
+      document.querySelectorAll('#view-project-detail .tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('detailTab-sources').style.display = tab === 'sources' ? 'block' : 'none';
+      document.getElementById('detailTab-analytics').style.display = tab === 'analytics' ? 'block' : 'none';
+      if (tab === 'analytics') loadAnalytics();
+    }
+
+    // ===== Analytics =====
+    async function loadAnalytics() {
+      const days = document.getElementById('analyticsDays').value;
+      try {
+        const res = await api('/v1/projects/' + currentProjectId + '/analytics?days=' + days);
+        if (!res.ok) return;
+        const data = await res.json();
+
+        document.getElementById('analyticsStats').innerHTML = `
+          <div class="stat-card"><div class="label">Total Queries</div><div class="value">${data.total_queries}</div><div class="sub">Last ${data.period_days} days</div></div>
+          <div class="stat-card"><div class="label">Avg Latency</div><div class="value">${data.avg_latency_ms}ms</div></div>
+          <div class="stat-card"><div class="label">P95 Latency</div><div class="value">${data.p95_latency_ms}ms</div></div>
+        `;
+
+        // Daily chart
+        const chart = document.getElementById('dailyChart');
+        if (data.daily.length === 0) {
+          chart.innerHTML = '<div class="empty" style="width:100%;"><p>No queries in this period</p></div>';
+        } else {
+          const maxCount = Math.max(...data.daily.map(d => d.count), 1);
+          chart.innerHTML = data.daily.map(d => {
+            const h = Math.max((d.count / maxCount) * 100, 4);
+            const label = d.date.slice(5); // MM-DD
+            return `<div class="chart-bar-wrap">
+              <div class="chart-value">${d.count}</div>
+              <div class="chart-bar" style="height:${h}px;" title="${d.date}: ${d.count} queries, avg ${d.avg_latency}ms"></div>
+              <div class="chart-label">${label}</div>
+            </div>`;
+          }).join('');
+        }
+
+        // Recent queries table
+        const tbody = document.getElementById('recentQueriesBody');
+        if (data.recent_queries.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#444;padding:30px;">No queries yet</td></tr>';
+        } else {
+          tbody.innerHTML = data.recent_queries.map(q => `<tr>
+            <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${esc(q.query)}">${esc(q.query)}</td>
+            <td>${q.chunks_returned}</td>
+            <td>${q.latency_ms}ms</td>
+            <td>${timeAgo(q.created_at)}</td>
+          </tr>`).join('');
+        }
+      } catch {}
+    }
+
+    // ===== Add Source =====
+    function switchSourceType(type, el) {
+      currentSourceType = type;
+      document.querySelectorAll('#sourceTypeTabs .tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('sourceForm-text').style.display = type === 'text' ? 'block' : 'none';
+      document.getElementById('sourceForm-url').style.display = type === 'url' ? 'block' : 'none';
+      document.getElementById('sourceForm-file').style.display = type === 'file' ? 'block' : 'none';
+    }
+
+    async function addSource() {
+      if (!currentProjectId) return;
+      const btn = document.getElementById('addSourceBtn');
+      btn.disabled = true;
+      btn.textContent = 'Adding...';
+
+      try {
+        let res;
+        if (currentSourceType === 'text') {
+          const title = document.getElementById('srcTitle').value.trim();
+          const content = document.getElementById('srcContent').value.trim();
+          if (!content) { alert('Enter text content'); return; }
+          res = await api('/v1/projects/' + currentProjectId + '/sources', {
+            method: 'POST', body: JSON.stringify({ type: 'text', title: title || 'Text source', content }),
+          });
+        } else if (currentSourceType === 'url') {
+          const url = document.getElementById('srcUrl').value.trim();
+          if (!url) { alert('Enter a URL'); return; }
+          res = await api('/v1/projects/' + currentProjectId + '/sources', {
+            method: 'POST', body: JSON.stringify({ type: 'url', url }),
+          });
+        } else if (currentSourceType === 'file') {
+          const file = document.getElementById('srcFile').files[0];
+          if (!file) { alert('Select a file'); return; }
+          const form = new FormData();
+          form.append('file', file);
+          res = await api('/v1/projects/' + currentProjectId + '/sources/upload', {
+            method: 'POST', body: form,
+          });
+        }
+        if (res && res.ok) {
+          document.getElementById('srcTitle').value = '';
+          document.getElementById('srcContent').value = '';
+          document.getElementById('srcUrl').value = '';
+          closeModal('addSourceModal');
+          loadProjectDetail(currentProjectId);
+        } else if (res) {
+          const err = await res.json();
+          alert('Error: ' + (err.detail || JSON.stringify(err)));
+        }
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Add Source';
+      }
+    }
+
+    // ===== Playground =====
+    function populatePlaygroundSelect() {
+      const sel = document.getElementById('playgroundProject');
+      sel.innerHTML = '<option value="">Select project...</option>' +
+        projects.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join('');
+    }
+
+    async function runPlaygroundQuery() {
+      const pid = document.getElementById('playgroundProject').value;
+      const q = document.getElementById('playgroundQuery').value.trim();
+      if (!pid) { alert('Select a project'); return; }
+      if (!q) return;
+
+      const btn = document.getElementById('playgroundSearchBtn');
+      const area = document.getElementById('playgroundResults');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>';
+      area.innerHTML = '<div class="empty"><span class="spinner"></span><p style="margin-top:12px;">Searching...</p></div>';
+
+      try {
+        const res = await api('/v1/projects/' + pid + '/query', {
+          method: 'POST', body: JSON.stringify({ query: q }),
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          area.innerHTML = '<div class="empty" style="color:#ef4444;">Error: ' + esc(err.detail || 'Query failed') + '</div>';
+          return;
+        }
+        const data = await res.json();
+        let html = '';
+
+        if (data.context_text) {
+          html += `<div style="padding:14px;background:#0f1a0f;border:1px solid #1a3a1a;border-radius:10px;margin-bottom:16px;">
+            <div style="font-size:12px;color:#22c55e;font-weight:600;margin-bottom:8px;">Context Text</div>
+            <pre style="font-size:12px;line-height:1.5;color:#aaa;white-space:pre-wrap;word-break:break-word;max-height:200px;overflow-y:auto;">${esc(data.context_text)}</pre>
+          </div>`;
+        }
+
+        if (data.chunks && data.chunks.length > 0) {
+          html += `<div style="font-size:13px;color:#555;margin-bottom:12px;">${data.chunks.length} chunks found</div>`;
+          data.chunks.forEach(c => {
+            html += `<div class="result-card">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <span class="score">Score: ${(c.score * 100).toFixed(1)}%</span>
+                <span class="source-label">${esc(c.source_url || c.source_type || '')}</span>
+              </div>
+              <div class="chunk-text">${esc(c.content)}</div>
+            </div>`;
+          });
+        } else {
+          html += '<div class="empty">No matching chunks found.</div>';
+        }
+
+        if (data.latency_ms) {
+          html += `<div style="font-size:12px;color:#444;margin-top:12px;">Query ID: ${data.query_id} | ${data.latency_ms}ms</div>`;
+        }
+        area.innerHTML = html;
+      } catch (e) {
+        area.innerHTML = '<div class="empty" style="color:#ef4444;">Network error: ' + esc(e.message) + '</div>';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Search';
+      }
+    }
+
+    // ===== Utilities =====
+    function esc(str) {
+      if (!str) return '';
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function timeAgo(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr);
+      const now = new Date();
+      const diff = (now - d) / 1000;
+      if (diff < 60) return 'just now';
+      if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+      if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+      return Math.floor(diff / 86400) + 'd ago';
+    }
+  </script>
+</body>
+</html>

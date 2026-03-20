@@ -1,7 +1,9 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 
 from restext.api.router import router
 from restext.models.base import engine
@@ -40,6 +42,16 @@ app.include_router(router, prefix="/v1")
 @app.get("/health")
 async def health():
     return {"status": "ok"}
+
+
+@app.get("/", response_class=HTMLResponse)
+async def dashboard():
+    # Try project root (local dev: ../../.., Railway: /app)
+    for base in [Path(__file__).resolve().parent.parent.parent, Path("/app")]:
+        html_path = base / "index.html"
+        if html_path.exists():
+            return HTMLResponse(html_path.read_text())
+    return HTMLResponse("<h1>Dashboard not found</h1>", status_code=404)
 
 
 @app.post("/bootstrap")
