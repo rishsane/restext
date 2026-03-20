@@ -16,25 +16,15 @@ from restext.services.vectorstore import upsert_vectors, ensure_collection, dele
 
 
 async def enqueue_source_ingestion(source_id: uuid.UUID, text_content: str | None = None):
-    """Run ingestion in a thread so it survives the HTTP response lifecycle."""
-    import asyncio
-    import threading
-
-    loop = asyncio.get_event_loop()
-
-    def _run():
-        async def _do():
-            try:
-                await _ingest_source(source_id, text_content)
-                print(f"[INGESTION] Completed for source {source_id}", flush=True)
-            except Exception as e:
-                print(f"[INGESTION ERROR] source {source_id}: {type(e).__name__}: {e}", flush=True)
-
-        future = asyncio.run_coroutine_threadsafe(_do(), loop)
-        future.result()  # block thread until done
-
-    thread = threading.Thread(target=_run, daemon=True)
-    thread.start()
+    """Run source ingestion. Called from FastAPI endpoints."""
+    try:
+        print(f"[INGESTION] Starting for source {source_id}", flush=True)
+        await _ingest_source(source_id, text_content)
+        print(f"[INGESTION] Completed for source {source_id}", flush=True)
+    except Exception as e:
+        print(f"[INGESTION ERROR] source {source_id}: {type(e).__name__}: {e}", flush=True)
+        import traceback
+        traceback.print_exc()
 
 
 async def _ingest_source(source_id: uuid.UUID, text_content: str | None = None):

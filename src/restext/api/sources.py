@@ -1,6 +1,6 @@
 import uuid
 
-from fastapi import APIRouter, HTTPException, UploadFile, File
+from fastapi import APIRouter, BackgroundTasks, HTTPException, UploadFile, File
 from sqlalchemy import select
 
 from restext.dependencies import DB, CurrentAccount
@@ -23,7 +23,7 @@ async def _get_project_for_account(project_id: uuid.UUID, account: CurrentAccoun
 
 
 @router.post("", response_model=SourceResponse, status_code=201)
-async def create_source(project_id: uuid.UUID, body: SourceCreate, account: CurrentAccount, db: DB):
+async def create_source(project_id: uuid.UUID, body: SourceCreate, account: CurrentAccount, db: DB, background_tasks: BackgroundTasks):
     await _get_project_for_account(project_id, account, db)
 
     if body.type in ("url", "sitemap") and not body.url:
@@ -47,8 +47,8 @@ async def create_source(project_id: uuid.UUID, body: SourceCreate, account: Curr
     await db.commit()
     await db.refresh(source)
 
-    # Enqueue background ingestion
-    await enqueue_source_ingestion(source.id, text_content=body.content if body.type == "text" else None)
+    # Enqueue background ingestion via FastAPI BackgroundTasks
+    background_tasks.add_task(enqueue_source_ingestion, source.id, text_content=body.content if body.type == "text" else None)
 
     return SourceResponse(
         id=source.id,
@@ -67,7 +67,7 @@ async def create_source(project_id: uuid.UUID, body: SourceCreate, account: Curr
 
 
 @router.post("/upload", response_model=SourceResponse, status_code=201)
-async def upload_source(project_id: uuid.UUID, file: UploadFile = File(...), account: CurrentAccount = None, db: DB = None):
+async def upload_source(project_id: uuid.UUID, file: UploadFile = File(...), account: CurrentAccount = None, db: DB = None, background_tasks: BackgroundTasks = None):
     await _get_project_for_account(project_id, account, db)
 
     allowed_extensions = {".pdf", ".txt", ".md", ".docx"}
@@ -99,7 +99,7 @@ async def upload_source(project_id: uuid.UUID, file: UploadFile = File(...), acc
     await db.commit()
     await db.refresh(source)
 
-    await enqueue_source_ingestion(source.id)
+    background_tasks.add_task(enqueue_source_ingestion, source.id)
 
     return SourceResponse(
         id=source.id,
@@ -159,7 +159,7 @@ async def delete_source(project_id: uuid.UUID, source_id: uuid.UUID, account: Cu
 
 
 @router.post("/{source_id}/recrawl")
-async def recrawl_source(project_id: uuid.UUID, source_id: uuid.UUID, account: CurrentAccount, db: DB):
+async def recrawl_source(project_id: uuid.UUID, source_id: uuid.UUID, account: CurrentAccount, db: DB, background_tasks: BackgroundTasks):
     await _get_project_for_account(project_id, account, db)
     result = await db.execute(
         select(Source).where(Source.id == source_id, Source.project_id == project_id)
@@ -171,6 +171,6 @@ async def recrawl_source(project_id: uuid.UUID, source_id: uuid.UUID, account: C
     source.status = "pending"
     await db.commit()
 
-    await enqueue_source_ingestion(source.id)
+    background_tasks.add_task(enqueue_source_ingestion, source.id)
 
     return {"status": "crawling"}
