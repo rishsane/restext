@@ -24,7 +24,7 @@ from restext.config import settings
 if settings.qdrant_path:
     _client = AsyncQdrantClient(path=settings.qdrant_path)
 else:
-    _client = AsyncQdrantClient(url=settings.qdrant_url, timeout=30, prefer_grpc=False)
+    _client = AsyncQdrantClient(url=settings.qdrant_url, timeout=30)
 
 
 def _collection_name(project_id: uuid.UUID) -> str:
