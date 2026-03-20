@@ -159,7 +159,7 @@ async def delete_source(project_id: uuid.UUID, source_id: uuid.UUID, account: Cu
 
 
 @router.post("/{source_id}/recrawl")
-async def recrawl_source(project_id: uuid.UUID, source_id: uuid.UUID, account: CurrentAccount, db: DB, background_tasks: BackgroundTasks):
+async def recrawl_source(project_id: uuid.UUID, source_id: uuid.UUID, account: CurrentAccount, db: DB):
     await _get_project_for_account(project_id, account, db)
     result = await db.execute(
         select(Source).where(Source.id == source_id, Source.project_id == project_id)
@@ -171,6 +171,7 @@ async def recrawl_source(project_id: uuid.UUID, source_id: uuid.UUID, account: C
     source.status = "pending"
     await db.commit()
 
-    background_tasks.add_task(enqueue_source_ingestion, source.id)
+    # Run synchronously so we can see errors — will be slow but guaranteed to work
+    await enqueue_source_ingestion(source.id)
 
-    return {"status": "crawling"}
+    return {"status": "done"}
