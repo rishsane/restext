@@ -171,7 +171,9 @@ async def recrawl_source(project_id: uuid.UUID, source_id: uuid.UUID, account: C
     source.status = "pending"
     await db.commit()
 
-    # Run synchronously so we can see errors — will be slow but guaranteed to work
-    await enqueue_source_ingestion(source.id)
-
-    return {"status": "done"}
+    from starlette.responses import JSONResponse
+    from starlette.background import BackgroundTask
+    return JSONResponse(
+        {"status": "crawling"},
+        background=BackgroundTask(enqueue_source_ingestion, source.id),
+    )
