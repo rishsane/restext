@@ -15,23 +15,13 @@ from restext.services.embedder import embed_texts
 from restext.services.vectorstore import upsert_vectors, ensure_collection, delete_source_vectors
 
 
-_background_tasks: set = set()
-
-
 async def enqueue_source_ingestion(source_id: uuid.UUID, text_content: str | None = None):
-    """Enqueue a source for ingestion."""
-    import asyncio
-
-    async def _safe_ingest():
-        try:
-            await _ingest_source(source_id, text_content)
-            print(f"[INGESTION] Completed for source {source_id}", flush=True)
-        except Exception as e:
-            print(f"[INGESTION ERROR] source {source_id}: {type(e).__name__}: {e}", flush=True)
-
-    task = asyncio.create_task(_safe_ingest())
-    _background_tasks.add(task)
-    task.add_done_callback(_background_tasks.discard)
+    """Run source ingestion synchronously."""
+    try:
+        await _ingest_source(source_id, text_content)
+        print(f"[INGESTION] Completed for source {source_id}", flush=True)
+    except Exception as e:
+        print(f"[INGESTION ERROR] source {source_id}: {type(e).__name__}: {e}", flush=True)
 
 
 async def _ingest_source(source_id: uuid.UUID, text_content: str | None = None):
