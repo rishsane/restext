@@ -8,173 +8,244 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #09090b; --surface: #111113; --surface-2: #18181b;
-      --border: #27272a; --border-light: #3f3f46;
-      --text: #fafafa; --text-2: #a1a1aa; --text-3: #71717a;
-      --accent: #f97316; --accent-hover: #ea580c; --accent-glow: rgba(249,115,22,0.15);
-      --green: #22c55e; --blue: #3b82f6; --purple: #a78bfa;
+      --bg: #050508; --surface: #0a0a10; --surface-2: #10101a;
+      --border: #1a1a2e; --border-light: #2a2a4e;
+      --text: #f0f0f5; --text-2: #9898b0; --text-3: #5a5a78;
+      --accent: #3b82f6; --accent-light: #60a5fa; --accent-dark: #2563eb;
+      --accent-glow: rgba(59,130,246,0.12); --accent-glow-strong: rgba(59,130,246,0.25);
+      --cyan: #22d3ee; --purple: #a78bfa; --green: #34d399;
     }
     html { scroll-behavior: smooth; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
 
-    /* Nav */
-    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(9,9,11,0.8); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
-    .nav-inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
-    .nav-logo { font-size: 18px; font-weight: 700; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 8px; }
-    .nav-logo .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
-    .nav-links { display: flex; align-items: center; gap: 32px; }
-    .nav-links a { color: var(--text-3); text-decoration: none; font-size: 14px; transition: color 0.15s; }
+    /* ===== Nav ===== */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(5,5,8,0.7); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(26,26,46,0.5); }
+    .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { font-size: 18px; font-weight: 700; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; letter-spacing: -0.02em; }
+    .nav-logo .logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent-glow-strong); }
+    .nav-links { display: flex; align-items: center; gap: 36px; }
+    .nav-links a { color: var(--text-3); text-decoration: none; font-size: 14px; transition: color 0.2s; }
     .nav-links a:hover { color: var(--text); }
     .nav-cta { display: flex; gap: 10px; align-items: center; }
 
-    /* Buttons */
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; border-radius: 10px; font-size: 14px; font-weight: 500; text-decoration: none; cursor: pointer; transition: all 0.2s; border: none; font-family: inherit; }
+    /* ===== Buttons ===== */
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 22px; border-radius: 10px; font-size: 14px; font-weight: 500; text-decoration: none; cursor: pointer; transition: all 0.25s; border: none; font-family: inherit; }
     .btn-primary { background: var(--accent); color: #fff; }
-    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 20px var(--accent-glow); }
-    .btn-secondary { background: var(--surface-2); color: var(--text-2); border: 1px solid var(--border); }
-    .btn-secondary:hover { background: var(--surface); color: var(--text); border-color: var(--border-light); }
-    .btn-lg { padding: 14px 28px; font-size: 16px; border-radius: 12px; }
-    .btn-sm { padding: 8px 14px; font-size: 13px; }
+    .btn-primary:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 8px 30px rgba(59,130,246,0.3); }
+    .btn-secondary { background: rgba(255,255,255,0.04); color: var(--text-2); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: rgba(255,255,255,0.08); color: var(--text); border-color: var(--border-light); }
+    .btn-lg { padding: 16px 32px; font-size: 16px; border-radius: 12px; }
+    .btn-sm { padding: 8px 16px; font-size: 13px; }
 
-    /* Hero */
-    .hero { padding: 160px 24px 100px; text-align: center; position: relative; overflow: hidden; }
-    .hero::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 800px; height: 600px; background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 70%); pointer-events: none; }
-    .hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 100px; font-size: 13px; color: var(--text-2); margin-bottom: 24px; }
-    .hero-badge .pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-    .hero h1 { font-size: clamp(36px, 6vw, 64px); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 20px; max-width: 720px; margin-left: auto; margin-right: auto; }
-    .hero h1 .accent { background: linear-gradient(135deg, var(--accent), #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .hero p { font-size: 18px; color: var(--text-2); max-width: 540px; margin: 0 auto 36px; line-height: 1.7; }
-    .hero-cta { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+    /* ===== Hero ===== */
+    .hero { position: relative; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 120px 32px 80px; overflow: hidden; }
+    #heroCanvas { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+    .hero-content { position: relative; z-index: 2; text-align: center; max-width: 800px; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 18px; background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); border-radius: 100px; font-size: 13px; color: var(--accent-light); margin-bottom: 28px; backdrop-filter: blur(8px); }
+    .hero-badge .pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-light); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .hero h1 { font-size: clamp(40px, 6vw, 72px); font-weight: 800; line-height: 1.05; letter-spacing: -0.04em; margin-bottom: 24px; }
+    .hero h1 .accent { background: linear-gradient(135deg, var(--accent-light), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero p { font-size: 19px; color: var(--text-2); max-width: 520px; margin: 0 auto 40px; line-height: 1.7; }
+    .hero-cta { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; }
+    .scroll-hint { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--text-3); font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; animation: bob 2s ease-in-out infinite; }
+    .scroll-hint .line { width: 1px; height: 32px; background: linear-gradient(to bottom, var(--accent), transparent); }
+    @keyframes bob { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
 
-    /* Code preview */
-    .code-section { max-width: 720px; margin: 60px auto 0; }
-    .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; text-align: left; }
-    .code-header { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+    /* ===== Reveal animations ===== */
+    .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-left { opacity: 0; transform: translateX(-60px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+    .reveal-right { opacity: 0; transform: translateX(60px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+    .reveal-scale { opacity: 0; transform: scale(0.9); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+    .reveal-scale.visible { opacity: 1; transform: scale(1); }
+
+    /* ===== Sections ===== */
+    section { padding: 120px 32px; position: relative; }
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+    .section-label { font-size: 12px; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; font-weight: 600; margin-bottom: 16px; }
+    .section-title { font-size: clamp(30px, 4vw, 44px); font-weight: 700; letter-spacing: -0.03em; margin-bottom: 16px; line-height: 1.15; }
+    .section-desc { font-size: 17px; color: var(--text-2); max-width: 520px; line-height: 1.7; }
+
+    /* ===== Code Hero ===== */
+    .code-hero { max-width: 680px; margin: 80px auto 0; position: relative; }
+    .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; text-align: left; box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px var(--accent-glow); }
+    .code-header { display: flex; align-items: center; gap: 8px; padding: 14px 18px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.02); }
     .code-dot { width: 10px; height: 10px; border-radius: 50%; }
     .code-dot:nth-child(1) { background: #ef4444; }
     .code-dot:nth-child(2) { background: #eab308; }
     .code-dot:nth-child(3) { background: #22c55e; }
-    .code-header span { font-size: 12px; color: var(--text-3); margin-left: 8px; }
-    .code-body { padding: 20px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; line-height: 1.8; overflow-x: auto; }
-    .code-body .comment { color: #71717a; }
-    .code-body .keyword { color: #c084fc; }
-    .code-body .string { color: #34d399; }
-    .code-body .func { color: #60a5fa; }
-    .code-body .const { color: #f97316; }
+    .code-header span { font-size: 12px; color: var(--text-3); margin-left: 10px; font-family: monospace; }
+    .code-body { padding: 24px; font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace; font-size: 13px; line-height: 1.9; overflow-x: auto; }
+    .code-body .cmt { color: var(--text-3); }
+    .code-body .kw { color: var(--purple); }
+    .code-body .str { color: var(--green); }
+    .code-body .fn { color: var(--accent-light); }
+    .code-body .const { color: var(--cyan); }
 
-    /* Section base */
-    section { padding: 100px 24px; }
-    .section-inner { max-width: 1120px; margin: 0 auto; }
-    .section-label { font-size: 13px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 12px; }
-    .section-title { font-size: 36px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; }
-    .section-desc { font-size: 16px; color: var(--text-2); max-width: 540px; line-height: 1.7; }
+    /* ===== How It Works — Sticky scroll panels ===== */
+    .how-section { padding: 0; }
+    .how-sticky-wrap { position: relative; }
+    .how-panels { position: relative; }
+    .how-panel { min-height: 100vh; display: flex; align-items: center; padding: 80px 32px; position: relative; }
+    .how-panel-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; width: 100%; }
+    .how-panel:nth-child(even) .how-panel-inner { direction: rtl; }
+    .how-panel:nth-child(even) .how-panel-inner > * { direction: ltr; }
+    .how-num { font-size: 120px; font-weight: 900; color: rgba(59,130,246,0.06); line-height: 1; margin-bottom: -20px; letter-spacing: -0.05em; }
+    .how-title { font-size: 32px; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.02em; }
+    .how-desc { font-size: 16px; color: var(--text-2); line-height: 1.8; margin-bottom: 24px; }
+    .how-visual { display: flex; align-items: center; justify-content: center; }
+    .how-visual-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 40px; width: 100%; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+    .how-visual-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, var(--accent-glow) 0%, transparent 70%); }
 
-    /* How it works */
-    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 60px; }
-    .step { position: relative; padding: 28px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; }
-    .step-num { width: 36px; height: 36px; border-radius: 10px; background: var(--accent-glow); border: 1px solid rgba(249,115,22,0.3); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: var(--accent); margin-bottom: 16px; }
-    .step h4 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
-    .step p { font-size: 14px; color: var(--text-2); line-height: 1.6; }
-    .step-connector { display: none; }
+    /* Visual elements inside cards */
+    .vis-nodes { position: relative; width: 200px; height: 200px; }
+    .vis-node { position: absolute; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 20px var(--accent-glow-strong); animation: float 3s ease-in-out infinite; }
+    .vis-node:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+    .vis-node:nth-child(2) { top: 60%; left: 80%; animation-delay: 0.5s; background: var(--cyan); box-shadow: 0 0 20px rgba(34,211,238,0.3); }
+    .vis-node:nth-child(3) { top: 80%; left: 30%; animation-delay: 1s; background: var(--purple); box-shadow: 0 0 20px rgba(167,139,250,0.3); }
+    .vis-node:nth-child(4) { top: 10%; left: 70%; animation-delay: 1.5s; }
+    .vis-node:nth-child(5) { top: 50%; left: 45%; animation-delay: 0.8s; width: 16px; height: 16px; background: var(--accent-light); }
+    .vis-line { position: absolute; background: linear-gradient(90deg, var(--accent), var(--cyan)); height: 1px; transform-origin: left center; opacity: 0.3; }
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
 
-    /* Features */
-    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 60px; }
-    .feature { padding: 28px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; transition: border-color 0.2s; }
-    .feature:hover { border-color: var(--border-light); }
-    .feature-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; font-size: 20px; }
-    .feature-icon.orange { background: rgba(249,115,22,0.1); color: var(--accent); }
-    .feature-icon.blue { background: rgba(59,130,246,0.1); color: var(--blue); }
-    .feature-icon.green { background: rgba(34,197,94,0.1); color: var(--green); }
-    .feature-icon.purple { background: rgba(167,139,250,0.1); color: var(--purple); }
-    .feature h4 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
-    .feature p { font-size: 14px; color: var(--text-2); line-height: 1.6; }
+    .vis-chunks { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 220px; }
+    .vis-chunk { height: 48px; border-radius: 8px; background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(34,211,238,0.08)); border: 1px solid rgba(59,130,246,0.2); animation: chunkPulse 2s ease-in-out infinite; }
+    .vis-chunk:nth-child(2) { animation-delay: 0.3s; }
+    .vis-chunk:nth-child(3) { animation-delay: 0.6s; grid-column: span 2; }
+    .vis-chunk:nth-child(4) { animation-delay: 0.9s; }
+    .vis-chunk:nth-child(5) { animation-delay: 1.2s; }
+    @keyframes chunkPulse { 0%,100% { opacity: 0.6; } 50% { opacity: 1; } }
 
-    /* Pricing */
+    .vis-query { width: 260px; text-align: left; }
+    .vis-query-bar { background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25); border-radius: 10px; padding: 12px 16px; font-size: 13px; color: var(--text-2); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .vis-query-bar .cursor { width: 1px; height: 16px; background: var(--accent); animation: blink 1s infinite; }
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+    .vis-result { background: rgba(34,211,238,0.06); border: 1px solid rgba(34,211,238,0.15); border-radius: 8px; padding: 10px 14px; margin-bottom: 6px; animation: slideUp 0.5s ease-out both; }
+    .vis-result:nth-child(3) { animation-delay: 0.2s; }
+    .vis-result:nth-child(4) { animation-delay: 0.4s; }
+    .vis-result .score { font-size: 11px; color: var(--cyan); font-weight: 600; }
+    .vis-result .text { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .vis-inject { width: 260px; text-align: left; }
+    .vis-prompt { background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.2); border-radius: 10px; padding: 14px; font-size: 11px; color: var(--text-3); line-height: 1.7; font-family: monospace; }
+    .vis-prompt .highlight { color: var(--accent-light); background: rgba(59,130,246,0.1); padding: 2px 4px; border-radius: 3px; }
+
+    /* ===== Features Grid ===== */
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 60px; }
+    .feature { padding: 32px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; transition: all 0.3s; position: relative; overflow: hidden; }
+    .feature::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--accent-glow-strong), transparent); opacity: 0; transition: opacity 0.3s; }
+    .feature:hover { border-color: var(--border-light); transform: translateY(-2px); }
+    .feature:hover::after { opacity: 1; }
+    .feature-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; font-size: 20px; background: var(--accent-glow); }
+    .feature h4 { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
+    .feature p { font-size: 14px; color: var(--text-2); line-height: 1.65; }
+
+    /* ===== Pricing ===== */
     .pricing-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 60px; }
-    .price-card { padding: 32px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; transition: all 0.2s; }
-    .price-card.featured { border-color: var(--accent); background: linear-gradient(180deg, rgba(249,115,22,0.05) 0%, var(--surface) 40%); position: relative; }
-    .price-card.featured::before { content: 'Most Popular'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #fff; padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-    .price-tier { font-size: 14px; font-weight: 600; color: var(--text-2); margin-bottom: 8px; }
-    .price-amount { font-size: 40px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 4px; }
+    .price-card { padding: 36px 28px; background: var(--surface); border: 1px solid var(--border); border-radius: 18px; display: flex; flex-direction: column; transition: all 0.3s; }
+    .price-card:hover { border-color: var(--border-light); }
+    .price-card.featured { border-color: var(--accent); background: linear-gradient(180deg, rgba(59,130,246,0.06) 0%, var(--surface) 50%); position: relative; }
+    .price-card.featured::before { content: 'Most Popular'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #fff; padding: 4px 16px; border-radius: 100px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .price-tier { font-size: 14px; font-weight: 600; color: var(--text-2); margin-bottom: 10px; }
+    .price-amount { font-size: 44px; font-weight: 800; letter-spacing: -0.04em; margin-bottom: 4px; }
     .price-amount .mo { font-size: 16px; font-weight: 400; color: var(--text-3); }
-    .price-desc { font-size: 13px; color: var(--text-3); margin-bottom: 24px; }
-    .price-features { list-style: none; flex: 1; margin-bottom: 24px; }
-    .price-features li { font-size: 13px; color: var(--text-2); padding: 6px 0; display: flex; align-items: flex-start; gap: 8px; }
-    .price-features li::before { content: ''; display: inline-block; width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2322c55e' stroke-width='2'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/contain no-repeat; }
+    .price-desc { font-size: 14px; color: var(--text-3); margin-bottom: 28px; line-height: 1.5; }
+    .price-features { list-style: none; flex: 1; margin-bottom: 28px; }
+    .price-features li { font-size: 13px; color: var(--text-2); padding: 7px 0; display: flex; align-items: flex-start; gap: 10px; }
+    .price-features li::before { content: ''; display: inline-block; width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2.5'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/contain no-repeat; }
     .price-card .btn { width: 100%; }
 
-    /* Use cases */
-    .usecases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 60px; }
-    .usecase { padding: 28px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; }
-    .usecase-tag { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; text-transform: uppercase; margin-bottom: 12px; }
-    .usecase-tag.support { background: rgba(59,130,246,0.1); color: var(--blue); }
-    .usecase-tag.sales { background: rgba(249,115,22,0.1); color: var(--accent); }
-    .usecase-tag.dev { background: rgba(34,197,94,0.1); color: var(--green); }
-    .usecase h4 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
-    .usecase p { font-size: 14px; color: var(--text-2); line-height: 1.6; }
+    /* ===== Use Cases — Horizontal scroll ===== */
+    .usecases-track { display: flex; gap: 20px; margin-top: 60px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: 20px; }
+    .usecases-track::-webkit-scrollbar { height: 4px; }
+    .usecases-track::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .usecase { min-width: 360px; max-width: 400px; padding: 36px; background: var(--surface); border: 1px solid var(--border); border-radius: 18px; scroll-snap-align: start; flex-shrink: 0; transition: all 0.3s; }
+    .usecase:hover { border-color: var(--border-light); }
+    .usecase-tag { display: inline-block; padding: 4px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; text-transform: uppercase; margin-bottom: 16px; letter-spacing: 0.5px; }
+    .usecase-tag.support { background: rgba(59,130,246,0.1); color: var(--accent-light); }
+    .usecase-tag.sales { background: rgba(167,139,250,0.1); color: var(--purple); }
+    .usecase-tag.dev { background: rgba(34,211,238,0.1); color: var(--cyan); }
+    .usecase h4 { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+    .usecase p { font-size: 14px; color: var(--text-2); line-height: 1.7; }
 
-    /* CTA */
-    .cta-section { text-align: center; padding: 100px 24px; background: linear-gradient(180deg, var(--bg) 0%, var(--surface) 100%); }
-    .cta-section h2 { font-size: 36px; font-weight: 700; margin-bottom: 16px; }
-    .cta-section p { font-size: 16px; color: var(--text-2); margin-bottom: 32px; max-width: 480px; margin-left: auto; margin-right: auto; }
+    /* ===== CTA ===== */
+    .cta-section { text-align: center; padding: 140px 32px; position: relative; overflow: hidden; }
+    .cta-section::before { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 800px; height: 400px; background: radial-gradient(ellipse, var(--accent-glow-strong) 0%, transparent 70%); pointer-events: none; }
+    .cta-section h2 { font-size: clamp(30px, 4vw, 44px); font-weight: 700; margin-bottom: 16px; letter-spacing: -0.02em; position: relative; z-index: 1; }
+    .cta-section p { font-size: 17px; color: var(--text-2); margin-bottom: 36px; max-width: 480px; margin-left: auto; margin-right: auto; position: relative; z-index: 1; }
 
-    /* Footer */
-    footer { padding: 40px 24px; border-top: 1px solid var(--border); }
-    .footer-inner { max-width: 1120px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    /* ===== Footer ===== */
+    footer { padding: 48px 32px; border-top: 1px solid var(--border); }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
     .footer-inner p { font-size: 13px; color: var(--text-3); }
-    .footer-links { display: flex; gap: 24px; }
-    .footer-links a { font-size: 13px; color: var(--text-3); text-decoration: none; }
+    .footer-links { display: flex; gap: 28px; }
+    .footer-links a { font-size: 13px; color: var(--text-3); text-decoration: none; transition: color 0.2s; }
     .footer-links a:hover { color: var(--text-2); }
 
-    /* Signup modal */
-    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+    /* ===== Signup Modal ===== */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(5,5,8,0.8); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
     .modal-overlay.open { display: flex; }
-    .signup-modal { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; width: 420px; max-width: 90vw; padding: 36px; text-align: center; }
-    .signup-modal h3 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
-    .signup-modal .subtitle { font-size: 14px; color: var(--text-2); margin-bottom: 28px; }
+    .signup-modal { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; width: 440px; max-width: 90vw; padding: 40px; text-align: center; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+    .signup-modal h3 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+    .signup-modal .subtitle { font-size: 15px; color: var(--text-2); margin-bottom: 28px; }
     .signup-form { display: flex; flex-direction: column; gap: 12px; }
-    .signup-form input { width: 100%; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: 14px; outline: none; font-family: inherit; }
+    .signup-form input { width: 100%; padding: 13px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: 14px; outline: none; font-family: inherit; transition: border-color 0.2s; }
     .signup-form input:focus { border-color: var(--accent); }
-    .signup-form .btn { width: 100%; justify-content: center; }
+    .signup-form .btn { width: 100%; }
     .signup-result { margin-top: 16px; text-align: left; }
-    .key-display { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px; font-family: 'SF Mono', monospace; font-size: 13px; word-break: break-all; color: var(--green); margin: 12px 0; position: relative; }
-    .key-display .copy-btn { position: absolute; right: 8px; top: 8px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text-3); font-size: 11px; padding: 4px 8px; cursor: pointer; }
-    .key-display .copy-btn:hover { color: var(--text); }
-    .signup-steps { text-align: left; margin-top: 16px; font-size: 13px; color: var(--text-2); }
+    .key-display { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; font-family: 'SF Mono', monospace; font-size: 13px; word-break: break-all; color: var(--green); margin: 14px 0; position: relative; }
+    .key-display .copy-btn { position: absolute; right: 10px; top: 10px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text-3); font-size: 11px; padding: 4px 10px; cursor: pointer; transition: all 0.2s; }
+    .key-display .copy-btn:hover { color: var(--text); border-color: var(--border-light); }
+    .signup-steps { text-align: left; margin-top: 16px; font-size: 13px; color: var(--text-2); line-height: 1.7; }
     .signup-steps li { margin-bottom: 8px; padding-left: 4px; }
 
-    /* Responsive */
-    @media (max-width: 900px) {
-      .steps { grid-template-columns: repeat(2, 1fr); }
+    /* ===== Divider ===== */
+    .section-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); max-width: 1200px; margin: 0 auto; }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 1024px) {
+      .how-panel-inner { grid-template-columns: 1fr; gap: 40px; text-align: center; }
+      .how-panel:nth-child(even) .how-panel-inner { direction: ltr; }
+      .how-visual { order: -1; }
       .features-grid { grid-template-columns: repeat(2, 1fr); }
       .pricing-grid { grid-template-columns: repeat(2, 1fr); }
-      .usecases { grid-template-columns: 1fr; }
-      .nav-links { display: none; }
     }
     @media (max-width: 600px) {
-      .steps, .features-grid, .pricing-grid { grid-template-columns: 1fr; }
-      .hero h1 { font-size: 32px; }
+      .features-grid, .pricing-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .hero h1 { font-size: 34px; }
       .footer-inner { flex-direction: column; gap: 16px; text-align: center; }
+      .how-panel { padding: 60px 20px; }
     }
 
     /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ===== Grain overlay ===== */
+    .grain { position: fixed; inset: 0; pointer-events: none; z-index: 999; opacity: 0.03; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+    /* ===== Horizontal line accents ===== */
+    .h-line { position: absolute; height: 1px; background: linear-gradient(90deg, transparent, var(--accent-glow-strong), transparent); }
   </style>
 </head>
 <body>
+  <div class="grain"></div>
 
   <!-- Nav -->
   <nav>
     <div class="nav-inner">
-      <a href="/" class="nav-logo"><span class="dot"></span> Restext</a>
+      <a href="/" class="nav-logo"><span class="logo-dot"></span> Restext</a>
       <div class="nav-links">
         <a href="#how-it-works">How It Works</a>
         <a href="#features">Features</a>
         <a href="#pricing">Pricing</a>
-        <a href="/docs" target="_blank">API Docs</a>
+        <a href="/docs" target="_blank">Docs</a>
       </div>
       <div class="nav-cta">
         <a href="/dashboard" class="btn btn-secondary btn-sm">Dashboard</a>
@@ -185,157 +256,250 @@
 
   <!-- Hero -->
   <section class="hero">
-    <div class="hero-badge"><span class="pulse"></span> Now in public beta</div>
-    <h1>Give your AI agent <span class="accent">a brain</span> in 5 minutes</h1>
-    <p>Drop-in context API for AI agents. Ingest docs, websites, and files. Query with one API call. No vector DB, no embedding pipeline, no infra to manage.</p>
-    <div class="hero-cta">
-      <button class="btn btn-primary btn-lg" onclick="openSignup()">Get Free API Key</button>
-      <a href="#how-it-works" class="btn btn-secondary btn-lg">See How It Works</a>
-    </div>
-
-    <div class="code-section">
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span>
-          <span>integration.py</span>
-        </div>
-        <div class="code-body">
-<span class="keyword">import</span> requests<br><br>
-<span class="comment"># 1. Add a source (one-time)</span><br>
-requests.<span class="func">post</span>(<span class="string">"https://api.restext.dev/v1/projects/{id}/sources"</span>,<br>
-&nbsp;&nbsp;headers={<span class="string">"Authorization"</span>: <span class="string">"Bearer rst_live_..."</span>},<br>
-&nbsp;&nbsp;json={<span class="string">"type"</span>: <span class="string">"url"</span>, <span class="string">"url"</span>: <span class="string">"https://docs.yourapp.com"</span>})<br><br>
-<span class="comment"># 2. Query context (every message)</span><br>
-ctx = requests.<span class="func">post</span>(<span class="string">"https://api.restext.dev/v1/projects/{id}/query"</span>,<br>
-&nbsp;&nbsp;headers={<span class="string">"Authorization"</span>: <span class="string">"Bearer rst_live_..."</span>},<br>
-&nbsp;&nbsp;json={<span class="string">"query"</span>: user_message}).<span class="func">json</span>()<br><br>
-<span class="comment"># 3. Inject into your agent's system prompt</span><br>
-system_prompt += ctx[<span class="string">"context_text"</span>]  <span class="comment"># done.</span>
-        </div>
+    <canvas id="heroCanvas"></canvas>
+    <div class="hero-content">
+      <div class="hero-badge"><span class="pulse"></span> Now in public beta</div>
+      <h1>Give your AI agent<br><span class="accent">a brain</span> in 5 minutes</h1>
+      <p>Drop-in context API for AI agents. Ingest docs, websites, and files. Query with one call. No vector DB, no embedding pipeline, no infra.</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary btn-lg" onclick="openSignup()">Get Free API Key</button>
+        <a href="#how-it-works" class="btn btn-secondary btn-lg">See How It Works</a>
       </div>
+    </div>
+    <div class="scroll-hint">
+      <span>Scroll</span>
+      <div class="line"></div>
     </div>
   </section>
 
-  <!-- How it works -->
-  <section id="how-it-works" style="background: var(--surface);">
+  <!-- Code Preview -->
+  <section style="padding-top: 0;">
     <div class="section-inner">
-      <div class="section-label">How It Works</div>
-      <div class="section-title">From zero to context in 4 steps</div>
-      <div class="section-desc">No infrastructure to set up. No models to fine-tune. Just API calls.</div>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <h4>Get your API key</h4>
-          <p>Sign up with your email. Instant key, no credit card. Start on the free tier with 1,000 queries/month.</p>
-        </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <h4>Create a project</h4>
-          <p>A project is a knowledge namespace. One per product, team, or use case. Keeps context isolated and relevant.</p>
-        </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <h4>Add sources</h4>
-          <p>Point us at URLs, upload files, or paste text. We auto-crawl, chunk, and embed everything. JS-rendered sites included.</p>
-        </div>
-        <div class="step">
-          <div class="step-num">4</div>
-          <h4>Query from your agent</h4>
-          <p>One POST request returns ranked, relevant context ready to inject into any LLM's system prompt. That's it.</p>
+      <div class="code-hero reveal-scale">
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span>
+            <span>integration.py</span>
+          </div>
+          <div class="code-body">
+<span class="kw">import</span> requests<br><br>
+<span class="cmt"># 1. Add a source (one-time)</span><br>
+requests.<span class="fn">post</span>(<span class="str">"https://api.restext.dev/v1/projects/{id}/sources"</span>,<br>
+&nbsp;&nbsp;headers={<span class="str">"Authorization"</span>: <span class="str">"Bearer rst_live_..."</span>},<br>
+&nbsp;&nbsp;json={<span class="str">"type"</span>: <span class="str">"url"</span>, <span class="str">"url"</span>: <span class="str">"https://docs.yourapp.com"</span>})<br><br>
+<span class="cmt"># 2. Query context (every message)</span><br>
+ctx = requests.<span class="fn">post</span>(<span class="str">"https://api.restext.dev/v1/projects/{id}/query"</span>,<br>
+&nbsp;&nbsp;headers={<span class="str">"Authorization"</span>: <span class="str">"Bearer rst_live_..."</span>},<br>
+&nbsp;&nbsp;json={<span class="str">"query"</span>: user_message}).<span class="fn">json</span>()<br><br>
+<span class="cmt"># 3. Inject into your agent's system prompt</span><br>
+system_prompt += ctx[<span class="str">"context_text"</span>]  <span class="cmt"># done.</span>
+          </div>
         </div>
       </div>
     </div>
   </section>
+
+  <div class="section-divider"></div>
+
+  <!-- How It Works — Full-viewport scroll panels -->
+  <section id="how-it-works" class="how-section">
+    <div class="section-inner" style="padding: 80px 0 0;">
+      <div class="section-label reveal">How It Works</div>
+      <div class="section-title reveal">From zero to context in 4 steps</div>
+      <div class="section-desc reveal">No infrastructure to set up. No models to fine-tune. Just API calls.</div>
+    </div>
+    <div class="how-panels">
+      <!-- Step 1 -->
+      <div class="how-panel">
+        <div class="how-panel-inner">
+          <div class="reveal-left">
+            <div class="how-num">01</div>
+            <div class="how-title">Get your API key</div>
+            <div class="how-desc">Sign up with your email. Instant key, no credit card required. Start building on the free tier with 1,000 queries per month.</div>
+            <button class="btn btn-primary" onclick="openSignup()">Get Free API Key</button>
+          </div>
+          <div class="how-visual reveal-right">
+            <div class="how-visual-card">
+              <div style="text-align:center; position:relative; z-index:1;">
+                <div style="font-family:monospace; font-size:14px; color:var(--accent-light); background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.2); border-radius:10px; padding:16px 24px; letter-spacing:1px;">rst_live_*****</div>
+                <div style="margin-top:16px; font-size:12px; color:var(--text-3);">Your API key is ready</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Step 2 -->
+      <div class="how-panel">
+        <div class="how-panel-inner">
+          <div class="reveal-right">
+            <div class="how-num">02</div>
+            <div class="how-title">Create a project</div>
+            <div class="how-desc">A project is a knowledge namespace. One per product, team, or use case. Keeps context isolated and relevant. No cross-contamination.</div>
+          </div>
+          <div class="how-visual reveal-left">
+            <div class="how-visual-card">
+              <div class="vis-nodes" style="position:relative; z-index:1;">
+                <div class="vis-node"></div>
+                <div class="vis-node"></div>
+                <div class="vis-node"></div>
+                <div class="vis-node"></div>
+                <div class="vis-node"></div>
+                <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.15;" viewBox="0 0 200 200">
+                  <line x1="26" y1="46" x2="166" y2="126" stroke="#3b82f6" stroke-width="1"/>
+                  <line x1="96" y1="106" x2="146" y2="26" stroke="#22d3ee" stroke-width="1"/>
+                  <line x1="26" y1="46" x2="66" y2="166" stroke="#a78bfa" stroke-width="1"/>
+                  <line x1="96" y1="106" x2="26" y2="46" stroke="#3b82f6" stroke-width="1"/>
+                  <line x1="146" y1="26" x2="166" y2="126" stroke="#3b82f6" stroke-width="1"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Step 3 -->
+      <div class="how-panel">
+        <div class="how-panel-inner">
+          <div class="reveal-left">
+            <div class="how-num">03</div>
+            <div class="how-title">Add sources</div>
+            <div class="how-desc">Point us at URLs, upload files, or paste text. We auto-crawl, chunk, and embed everything. JS-rendered sites included via Playwright.</div>
+          </div>
+          <div class="how-visual reveal-right">
+            <div class="how-visual-card">
+              <div class="vis-chunks" style="position:relative; z-index:1;">
+                <div class="vis-chunk"></div>
+                <div class="vis-chunk"></div>
+                <div class="vis-chunk"></div>
+                <div class="vis-chunk"></div>
+                <div class="vis-chunk"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Step 4 -->
+      <div class="how-panel">
+        <div class="how-panel-inner">
+          <div class="reveal-right">
+            <div class="how-num">04</div>
+            <div class="how-title">Query from your agent</div>
+            <div class="how-desc">One POST request returns ranked, relevant context ready to inject into any LLM's system prompt. Hybrid search with BM25 + dense vectors.</div>
+          </div>
+          <div class="how-visual reveal-left">
+            <div class="how-visual-card">
+              <div class="vis-query" style="position:relative; z-index:1;">
+                <div class="vis-query-bar">How does pricing work?<span class="cursor"></span></div>
+                <div class="vis-result"><span class="score">92.4% match</span><div class="text">Pricing is based on usage tiers...</div></div>
+                <div class="vis-result"><span class="score">87.1% match</span><div class="text">Enterprise plans include custom...</div></div>
+                <div class="vis-result"><span class="score">81.3% match</span><div class="text">Free tier includes 1,000 queries...</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
 
   <!-- Features -->
   <section id="features">
     <div class="section-inner">
-      <div class="section-label">Features</div>
-      <div class="section-title">Everything your agent needs to be smart</div>
-      <div class="section-desc">Built for production AI agents. Not a toy demo.</div>
+      <div class="section-label reveal">Features</div>
+      <div class="section-title reveal">Everything your agent needs to be smart</div>
+      <div class="section-desc reveal">Built for production AI agents. Not a toy demo.</div>
       <div class="features-grid">
-        <div class="feature">
-          <div class="feature-icon orange">&#9889;</div>
+        <div class="feature reveal" style="transition-delay:0ms;">
+          <div class="feature-icon">&#9889;</div>
           <h4>Hybrid Search</h4>
-          <p>Dense vector + BM25 sparse retrieval. Better recall than vector-only search, especially for technical content.</p>
+          <p>Dense vector + BM25 sparse retrieval. Better recall than vector-only, especially for technical content and exact terms.</p>
         </div>
-        <div class="feature">
-          <div class="feature-icon blue">&#127760;</div>
+        <div class="feature reveal" style="transition-delay:80ms;">
+          <div class="feature-icon">&#127760;</div>
           <h4>Auto-Crawling</h4>
-          <p>Point us at a URL or sitemap. We crawl, parse, and re-index on schedule. Handles JS-rendered sites with Playwright.</p>
+          <p>Point us at a URL or sitemap. We crawl, parse, and re-index on schedule. JS-rendered sites handled with Playwright.</p>
         </div>
-        <div class="feature">
-          <div class="feature-icon green">&#128200;</div>
+        <div class="feature reveal" style="transition-delay:160ms;">
+          <div class="feature-icon">&#128200;</div>
           <h4>Smart Chunking</h4>
           <p>Context-aware chunking preserves document structure. Section headings, code blocks, and lists stay intact.</p>
         </div>
-        <div class="feature">
-          <div class="feature-icon purple">&#128161;</div>
+        <div class="feature reveal" style="transition-delay:240ms;">
+          <div class="feature-icon">&#128161;</div>
           <h4>Freshness Re-ranking</h4>
-          <p>Recent content ranks higher automatically. Stale docs don't pollute your agent's answers.</p>
+          <p>Recent content ranks higher. Stale docs don't pollute answers. Time-weighted scoring built in.</p>
         </div>
-        <div class="feature">
-          <div class="feature-icon orange">&#128270;</div>
+        <div class="feature reveal" style="transition-delay:320ms;">
+          <div class="feature-icon">&#128270;</div>
           <h4>Source Discovery</h4>
           <p>Tell us a topic — we find relevant URLs across the web and auto-ingest them into your project.</p>
         </div>
-        <div class="feature">
-          <div class="feature-icon blue">&#128202;</div>
+        <div class="feature reveal" style="transition-delay:400ms;">
+          <div class="feature-icon">&#128202;</div>
           <h4>Query Analytics</h4>
-          <p>See what your users ask, which chunks get returned, latency percentiles. Understand and improve your agent's knowledge.</p>
+          <p>See what users ask, which chunks return, latency percentiles. Understand and improve your agent's knowledge.</p>
         </div>
-        <div class="feature">
-          <div class="feature-icon green">&#128274;</div>
+        <div class="feature reveal" style="transition-delay:480ms;">
+          <div class="feature-icon">&#128274;</div>
           <h4>Project Isolation</h4>
           <p>Each project has its own vector space. No cross-contamination between products, tenants, or environments.</p>
         </div>
-        <div class="feature">
-          <div class="feature-icon purple">&#128640;</div>
+        <div class="feature reveal" style="transition-delay:560ms;">
+          <div class="feature-icon">&#128640;</div>
           <h4>One API Call</h4>
-          <p>Single POST endpoint returns ranked chunks + a ready-to-use context string. No client-side ranking or assembly.</p>
+          <p>Single POST returns ranked chunks + a ready-to-use context string. No client-side ranking or assembly needed.</p>
         </div>
-        <div class="feature">
-          <div class="feature-icon orange">&#128736;</div>
-          <h4>Dashboard</h4>
-          <p>Web UI to manage projects, sources, and monitor queries. No code needed for content operations.</p>
+        <div class="feature reveal" style="transition-delay:640ms;">
+          <div class="feature-icon">&#128736;</div>
+          <h4>Web Dashboard</h4>
+          <p>Manage projects, sources, and monitor queries from a clean web UI. No code needed for content operations.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Use cases -->
-  <section style="background: var(--surface);">
+  <div class="section-divider"></div>
+
+  <!-- Use Cases -->
+  <section>
     <div class="section-inner">
-      <div class="section-label">Use Cases</div>
-      <div class="section-title">Built for teams shipping AI products</div>
-      <div class="usecases">
-        <div class="usecase">
+      <div class="section-label reveal">Use Cases</div>
+      <div class="section-title reveal">Built for teams shipping AI products</div>
+      <div class="usecases-track">
+        <div class="usecase reveal" style="transition-delay:0ms;">
           <span class="usecase-tag support">Support</span>
           <h4>Customer support agents</h4>
-          <p>Feed your helpdesk docs, knowledge base, and FAQs. Your AI agent answers questions accurately with up-to-date context, reducing ticket volume.</p>
+          <p>Feed your helpdesk docs, knowledge base, and FAQs. Your AI agent answers questions accurately with up-to-date context, reducing ticket volume by 40%+.</p>
         </div>
-        <div class="usecase">
+        <div class="usecase reveal" style="transition-delay:100ms;">
           <span class="usecase-tag sales">Sales</span>
           <h4>Sales & onboarding bots</h4>
           <p>Ingest product docs, pricing pages, and case studies. Your chatbot handles pre-sales questions with real product knowledge, not hallucinations.</p>
         </div>
-        <div class="usecase">
+        <div class="usecase reveal" style="transition-delay:200ms;">
           <span class="usecase-tag dev">Developer</span>
           <h4>Internal dev assistants</h4>
           <p>Index your codebase docs, runbooks, and architecture decisions. Engineering teams get instant, accurate answers about their own systems.</p>
+        </div>
+        <div class="usecase reveal" style="transition-delay:300ms;">
+          <span class="usecase-tag support">Product</span>
+          <h4>In-app AI copilots</h4>
+          <p>Ship an AI copilot inside your SaaS that actually understands your product. Contextual help that scales without hiring more support staff.</p>
         </div>
       </div>
     </div>
   </section>
 
+  <div class="section-divider"></div>
+
   <!-- Pricing -->
   <section id="pricing">
     <div class="section-inner">
-      <div class="section-label">Pricing</div>
-      <div class="section-title">Start free. Scale when you're ready.</div>
-      <div class="section-desc">No credit card required. No surprise bills. Upgrade when your agent gets popular.</div>
+      <div class="section-label reveal">Pricing</div>
+      <div class="section-title reveal">Start free. Scale when ready.</div>
+      <div class="section-desc reveal">No credit card. No surprise bills. Upgrade when your agent gets popular.</div>
       <div class="pricing-grid">
-        <div class="price-card">
+        <div class="price-card reveal" style="transition-delay:0ms;">
           <div class="price-tier">Free</div>
           <div class="price-amount">$0</div>
           <div class="price-desc">For experimentation and prototypes</div>
@@ -349,7 +513,7 @@ system_prompt += ctx[<span class="string">"context_text"</span>]  <span class="c
           </ul>
           <button class="btn btn-secondary" onclick="openSignup('free')">Get Started</button>
         </div>
-        <div class="price-card featured">
+        <div class="price-card featured reveal" style="transition-delay:100ms;">
           <div class="price-tier">Pro</div>
           <div class="price-amount">$49 <span class="mo">/ mo</span></div>
           <div class="price-desc">For production agents with real users</div>
@@ -365,7 +529,7 @@ system_prompt += ctx[<span class="string">"context_text"</span>]  <span class="c
           </ul>
           <button class="btn btn-primary" onclick="openSignup('pro')">Start Free Trial</button>
         </div>
-        <div class="price-card">
+        <div class="price-card reveal" style="transition-delay:200ms;">
           <div class="price-tier">Scale</div>
           <div class="price-amount">$199 <span class="mo">/ mo</span></div>
           <div class="price-desc">For high-volume, multi-product teams</div>
@@ -381,7 +545,7 @@ system_prompt += ctx[<span class="string">"context_text"</span>]  <span class="c
           </ul>
           <button class="btn btn-secondary" onclick="openSignup('scale')">Start Free Trial</button>
         </div>
-        <div class="price-card">
+        <div class="price-card reveal" style="transition-delay:300ms;">
           <div class="price-tier">Enterprise</div>
           <div class="price-amount">Custom</div>
           <div class="price-desc">For organizations with advanced needs</div>
@@ -393,7 +557,7 @@ system_prompt += ctx[<span class="string">"context_text"</span>]  <span class="c
             <li>SLA guarantee</li>
             <li>Custom integrations</li>
             <li>Dedicated account manager</li>
-            <li>On-prem deployment option</li>
+            <li>On-prem option</li>
           </ul>
           <a href="mailto:hello@restext.dev" class="btn btn-secondary">Contact Sales</a>
         </div>
@@ -403,9 +567,11 @@ system_prompt += ctx[<span class="string">"context_text"</span>]  <span class="c
 
   <!-- CTA -->
   <section class="cta-section">
-    <h2>Ready to give your agent a brain?</h2>
-    <p>Free tier. No credit card. API key in 10 seconds. Your first query in under a minute.</p>
-    <button class="btn btn-primary btn-lg" onclick="openSignup()">Get Free API Key</button>
+    <h2 class="reveal">Ready to give your agent a brain?</h2>
+    <p class="reveal">Free tier. No credit card. API key in 10 seconds.</p>
+    <div class="reveal">
+      <button class="btn btn-primary btn-lg" onclick="openSignup()">Get Free API Key</button>
+    </div>
   </section>
 
   <!-- Footer -->
@@ -448,11 +614,112 @@ system_prompt += ctx[<span class="string">"context_text"</span>]  <span class="c
         </ol>
         <a href="/dashboard" class="btn btn-primary" style="width:100%;margin-top:20px;">Open Dashboard</a>
       </div>
-      <button onclick="closeSignup()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text-3);cursor:pointer;font-size:20px;">&times;</button>
+      <button onclick="closeSignup()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text-3);cursor:pointer;font-size:22px;line-height:1;">&times;</button>
     </div>
   </div>
 
+  <!-- Three.js for wireframe sphere -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
+    // ===== 3D Wireframe Sphere =====
+    (function() {
+      const canvas = document.getElementById('heroCanvas');
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+      camera.position.z = 4.5;
+
+      // Icosahedron wireframe
+      const geo = new THREE.IcosahedronGeometry(1.6, 3);
+      const mat = new THREE.MeshBasicMaterial({ color: 0x3b82f6, wireframe: true, transparent: true, opacity: 0.12 });
+      const sphere = new THREE.Mesh(geo, mat);
+      scene.add(sphere);
+
+      // Inner sphere
+      const geo2 = new THREE.IcosahedronGeometry(1.2, 2);
+      const mat2 = new THREE.MeshBasicMaterial({ color: 0x22d3ee, wireframe: true, transparent: true, opacity: 0.06 });
+      const sphere2 = new THREE.Mesh(geo2, mat2);
+      scene.add(sphere2);
+
+      // Particle dots at vertices
+      const dotGeo = new THREE.BufferGeometry();
+      const positions = geo.attributes.position.array;
+      dotGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+      const dotMat = new THREE.PointsMaterial({ color: 0x60a5fa, size: 0.02, transparent: true, opacity: 0.5 });
+      const dots = new THREE.Points(dotGeo, dotMat);
+      scene.add(dots);
+
+      let mouseX = 0, mouseY = 0;
+      document.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX / window.innerWidth - 0.5) * 0.5;
+        mouseY = (e.clientY / window.innerHeight - 0.5) * 0.5;
+      });
+
+      function resize() {
+        const w = canvas.parentElement.clientWidth;
+        const h = canvas.parentElement.clientHeight;
+        renderer.setSize(w, h);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      // Scroll-based opacity
+      let scrollOpacity = 1;
+      window.addEventListener('scroll', () => {
+        const t = window.scrollY / window.innerHeight;
+        scrollOpacity = Math.max(0, 1 - t * 1.5);
+      });
+
+      function animate() {
+        requestAnimationFrame(animate);
+        sphere.rotation.y += 0.002;
+        sphere.rotation.x += 0.001;
+        sphere2.rotation.y -= 0.003;
+        sphere2.rotation.x -= 0.001;
+        dots.rotation.y = sphere.rotation.y;
+        dots.rotation.x = sphere.rotation.x;
+
+        // Mouse parallax
+        sphere.rotation.y += mouseX * 0.01;
+        sphere.rotation.x += mouseY * 0.01;
+
+        mat.opacity = 0.12 * scrollOpacity;
+        mat2.opacity = 0.06 * scrollOpacity;
+        dotMat.opacity = 0.5 * scrollOpacity;
+
+        renderer.render(scene, camera);
+      }
+      animate();
+    })();
+
+    // ===== Scroll Reveal =====
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(el => observer.observe(el));
+
+    // ===== Parallax on scroll for how-visual-cards =====
+    window.addEventListener('scroll', () => {
+      const cards = document.querySelectorAll('.how-visual-card');
+      cards.forEach(card => {
+        const rect = card.getBoundingClientRect();
+        const center = rect.top + rect.height / 2;
+        const viewCenter = window.innerHeight / 2;
+        const offset = (center - viewCenter) / window.innerHeight;
+        card.style.transform = `translateY(${offset * -20}px)`;
+      });
+    });
+
+    // ===== Signup =====
     let selectedPlan = 'free';
 
     function openSignup(plan) {
@@ -485,16 +752,12 @@ system_prompt += ctx[<span class="string">"context_text"</span>]  <span class="c
         });
         const data = await res.json();
 
-        if (data.error) {
-          alert(data.error);
-          return;
-        }
+        if (data.error) { alert(data.error); return; }
 
         document.getElementById('apiKeyText').textContent = data.api_key;
         document.getElementById('signupFormView').style.display = 'none';
         document.getElementById('signupSuccessView').style.display = 'block';
 
-        // Save to localStorage for dashboard
         localStorage.setItem('restext_key', data.api_key);
         localStorage.setItem('restext_url', window.location.origin);
       } catch (e) {
@@ -512,7 +775,6 @@ system_prompt += ctx[<span class="string">"context_text"</span>]  <span class="c
       setTimeout(() => { document.querySelector('.copy-btn').textContent = 'Copy'; }, 2000);
     }
 
-    // Close modal on overlay click
     document.getElementById('signupModal').addEventListener('click', function(e) {
       if (e.target === this) closeSignup();
     });

@@ -20,7 +20,7 @@
     .sidebar-nav { padding: 12px; flex: 1; }
     .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; font-size: 14px; color: #888; cursor: pointer; transition: all 0.15s; border: none; background: none; width: 100%; text-align: left; }
     .nav-item:hover { background: #1a1a1a; color: #ccc; }
-    .nav-item.active { background: #1a1a1a; color: #f97316; }
+    .nav-item.active { background: #1a1a1a; color: #3b82f6; }
     .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
     .sidebar-footer { padding: 16px; border-top: 1px solid #1e1e1e; }
     .connection-status { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #555; }
@@ -55,8 +55,8 @@
 
     /* Buttons */
     .btn { padding: 8px 14px; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px; }
-    .btn-primary { background: #f97316; color: #fff; }
-    .btn-primary:hover { background: #ea580c; }
+    .btn-primary { background: #3b82f6; color: #fff; }
+    .btn-primary:hover { background: #2563eb; }
     .btn-ghost { background: transparent; color: #888; border: 1px solid #222; }
     .btn-ghost:hover { background: #1a1a1a; color: #ccc; }
     .btn-danger { background: transparent; color: #ef4444; border: 1px solid #3a1515; }
@@ -67,14 +67,14 @@
     /* Badge */
     .badge { padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
     .badge-ready { background: #052e16; color: #22c55e; }
-    .badge-pending, .badge-crawling, .badge-indexing, .badge-processing { background: #1c1917; color: #f97316; }
+    .badge-pending, .badge-crawling, .badge-indexing, .badge-processing { background: #0c1929; color: #3b82f6; }
     .badge-error { background: #2c0b0b; color: #ef4444; }
 
     /* Forms */
     .form-group { margin-bottom: 14px; }
     .form-group label { display: block; font-size: 12px; color: #666; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px; }
     .form-input { width: 100%; padding: 10px 12px; background: #0a0a0a; border: 1px solid #222; border-radius: 8px; color: #e5e5e5; font-size: 14px; outline: none; font-family: inherit; }
-    .form-input:focus { border-color: #f97316; }
+    .form-input:focus { border-color: #3b82f6; }
     textarea.form-input { resize: vertical; min-height: 80px; }
 
     /* Tabs */
@@ -96,8 +96,8 @@
     /* Chart */
     .chart-bar-container { display: flex; align-items: flex-end; gap: 4px; height: 120px; padding: 0 4px; }
     .chart-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-    .chart-bar { width: 100%; min-width: 12px; background: #f97316; border-radius: 4px 4px 0 0; transition: height 0.3s; }
-    .chart-bar:hover { background: #fb923c; }
+    .chart-bar { width: 100%; min-width: 12px; background: #3b82f6; border-radius: 4px 4px 0 0; transition: height 0.3s; }
+    .chart-bar:hover { background: #60a5fa; }
     .chart-label { font-size: 9px; color: #444; white-space: nowrap; }
     .chart-value { font-size: 9px; color: #888; }
 
@@ -106,17 +106,17 @@
     .empty p { font-size: 14px; margin-bottom: 16px; }
 
     /* Loading */
-    .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #333; border-top-color: #f97316; border-radius: 50%; animation: spin 0.6s linear infinite; }
+    .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #333; border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.6s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* Query playground */
     .query-area { position: relative; }
     .query-area textarea { width: 100%; padding: 14px 80px 14px 16px; background: #0a0a0a; border: 1px solid #222; border-radius: 10px; color: #e5e5e5; font-size: 14px; font-family: inherit; resize: none; outline: none; min-height: 52px; }
-    .query-area textarea:focus { border-color: #f97316; }
+    .query-area textarea:focus { border-color: #3b82f6; }
     .query-area .send-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); }
 
     .result-card { padding: 14px; background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 10px; margin-bottom: 10px; }
-    .result-card .score { color: #f97316; font-weight: 600; font-size: 13px; }
+    .result-card .score { color: #3b82f6; font-weight: 600; font-size: 13px; }
     .result-card .source-label { color: #555; font-size: 12px; }
     .result-card .chunk-text { font-size: 13px; line-height: 1.6; color: #bbb; margin-top: 8px; white-space: pre-wrap; }
 
@@ -147,11 +147,11 @@
     .onboarding-card .subtitle { font-size: 15px; color: #888; margin-bottom: 32px; line-height: 1.6; }
     .onboarding-progress { display: flex; gap: 6px; margin-bottom: 32px; }
     .onboarding-progress .step { flex: 1; height: 4px; border-radius: 2px; background: #222; }
-    .onboarding-progress .step.done { background: #f97316; }
-    .onboarding-progress .step.current { background: #f97316; opacity: 0.5; }
+    .onboarding-progress .step.done { background: #3b82f6; }
+    .onboarding-progress .step.current { background: #3b82f6; opacity: 0.5; }
     .ob-form { display: flex; flex-direction: column; gap: 14px; }
     .ob-form input, .ob-form textarea, .ob-form select { width: 100%; padding: 12px 14px; background: #111; border: 1px solid #222; border-radius: 10px; color: #e5e5e5; font-size: 14px; outline: none; font-family: inherit; }
-    .ob-form input:focus, .ob-form textarea:focus { border-color: #f97316; }
+    .ob-form input:focus, .ob-form textarea:focus { border-color: #3b82f6; }
     .ob-form textarea { resize: vertical; min-height: 80px; }
     .ob-actions { display: flex; gap: 10px; margin-top: 8px; }
     .ob-actions .btn { flex: 1; justify-content: center; }
@@ -187,7 +187,7 @@
             <label style="font-size:12px;color:#666;display:block;margin-bottom:6px;">API Key</label>
             <input type="password" id="obApiKey" placeholder="rst_live_..." />
           </div>
-          <p style="font-size:12px;color:#555;">Don't have a key? <a href="/" style="color:#f97316;" target="_blank">Sign up here</a></p>
+          <p style="font-size:12px;color:#555;">Don't have a key? <a href="/" style="color:#3b82f6;" target="_blank">Sign up here</a></p>
           <div class="ob-actions">
             <button class="btn btn-ghost" onclick="skipOnboarding()">Skip</button>
             <button class="btn btn-primary" onclick="obConnect()" id="obConnectBtn">Connect</button>
