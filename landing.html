@@ -42,9 +42,9 @@
     /* ===== Hero ===== */
     .hero { position: relative; min-height: 100vh; display: flex; flex-direction: column; padding: 140px 32px 60px; overflow: hidden; }
     .hero-inner { max-width: 1200px; margin: 0 auto; width: 100%; position: relative; z-index: 2; }
-    #heroCanvas { position: absolute; top: 50%; left: 55%; transform: translate(-50%, -50%); width: 100%; height: 100%; pointer-events: none; z-index: 1; }
     .hero h1 { font-size: clamp(52px, 8vw, 110px); font-weight: 800; line-height: 0.95; letter-spacing: -0.05em; margin-bottom: 0; color: var(--text); max-width: 900px; }
     .hero h1 .line2 { display: block; }
+    .hero h1 .accent { background: linear-gradient(135deg, var(--accent), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .hero-bottom { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 60px; }
     .hero-desc { max-width: 440px; }
     .hero-desc p { font-size: 17px; color: var(--text-2); line-height: 1.7; margin-bottom: 28px; }
@@ -52,8 +52,6 @@
     .hero-scroll .line { width: 1px; height: 40px; background: linear-gradient(to bottom, var(--text-3), transparent); animation: bob 2.5s ease-in-out infinite; }
     @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
 
-    /* Blue arc decoration */
-    .hero-arc { position: absolute; top: -100px; left: -200px; width: 700px; height: 700px; border-radius: 50%; border: 80px solid var(--accent); opacity: 0.07; z-index: 0; pointer-events: none; }
 
     /* ===== Reveal ===== */
     .reveal { opacity: 0; transform: translateY(50px); transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -239,10 +237,8 @@
 
   <!-- Hero -->
   <section class="hero">
-    <div class="hero-arc"></div>
-    <canvas id="heroCanvas"></canvas>
     <div class="hero-inner">
-      <h1>Give your AI agent<span class="line2">a brain in 5 minutes</span></h1>
+      <h1>Give your AI agent<span class="line2"><span class="accent">a brain</span> in 5 minutes</span></h1>
       <div class="hero-bottom">
         <div class="hero-desc">
           <p>Drop-in RAG API for AI agents. Ingest docs, websites, and files. Query with one call. No vector DB, no embedding pipeline, no infra to manage.</p>
@@ -583,117 +579,7 @@ system_prompt += ctx[<span class="str">"context_text"</span>]  <span class="cmt"
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
-    // ===== Simplex noise (compact implementation) =====
-    const SimplexNoise=function(){const F2=0.5*(Math.sqrt(3)-1),G2=(3-Math.sqrt(3))/6,F3=1/3,G3=1/6;const grad3=[[1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0],[1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1],[0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]];const p=[];for(let i=0;i<256;i++)p[i]=Math.floor(Math.random()*256);const perm=new Array(512),permMod12=new Array(512);for(let i=0;i<512;i++){perm[i]=p[i&255];permMod12[i]=perm[i]%12;}this.noise3D=function(x,y,z){const s=(x+y+z)*F3;const i=Math.floor(x+s),j=Math.floor(y+s),k=Math.floor(z+s);const t=(i+j+k)*G3;const X0=i-t,Y0=j-t,Z0=k-t;const x0=x-X0,y0=y-Y0,z0=z-Z0;let i1,j1,k1,i2,j2,k2;if(x0>=y0){if(y0>=z0){i1=1;j1=0;k1=0;i2=1;j2=1;k2=0;}else if(x0>=z0){i1=1;j1=0;k1=0;i2=1;j2=0;k2=1;}else{i1=0;j1=0;k1=1;i2=1;j2=0;k2=1;}}else{if(y0<z0){i1=0;j1=0;k1=1;i2=0;j2=1;k2=1;}else if(x0<z0){i1=0;j1=1;k1=0;i2=0;j2=1;k2=1;}else{i1=0;j1=1;k1=0;i2=1;j2=1;k2=0;}}const x1=x0-i1+G3,y1=y0-j1+G3,z1=z0-k1+G3;const x2=x0-i2+2*G3,y2=y0-j2+2*G3,z2=z0-k2+2*G3;const x3=x0-1+3*G3,y3=y0-1+3*G3,z3=z0-1+3*G3;const ii=i&255,jj=j&255,kk=k&255;const dot=(g,x,y,z)=>g[0]*x+g[1]*y+g[2]*z;let n0,n1,n2,n3;let t0=0.6-x0*x0-y0*y0-z0*z0;n0=t0<0?0:(t0*=t0,t0*t0*dot(grad3[permMod12[ii+perm[jj+perm[kk]]]],x0,y0,z0));let t1=0.6-x1*x1-y1*y1-z1*z1;n1=t1<0?0:(t1*=t1,t1*t1*dot(grad3[permMod12[ii+i1+perm[jj+j1+perm[kk+k1]]]],x1,y1,z1));let t2=0.6-x2*x2-y2*y2-z2*z2;n2=t2<0?0:(t2*=t2,t2*t2*dot(grad3[permMod12[ii+i2+perm[jj+j2+perm[kk+k2]]]],x2,y2,z2));let t3=0.6-x3*x3-y3*y3-z3*z3;n3=t3<0?0:(t3*=t3,t3*t3*dot(grad3[permMod12[ii+1+perm[jj+1+perm[kk+1]]]],x3,y3,z3));return 32*(n0+n1+n2+n3);};};
-
-    // ===== 3D Organic Wireframe Blob =====
-    (function() {
-      const canvas = document.getElementById('heroCanvas');
-      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.setClearColor(0x000000, 0);
-
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
-      camera.position.z = 5.5;
-
-      const noise = new SimplexNoise();
-
-      // Dense sphere geometry for organic blob
-      const geo = new THREE.IcosahedronGeometry(1.8, 6); // detail 6 = very dense mesh
-      const basePositions = new Float32Array(geo.attributes.position.array);
-
-      // Wireframe material — blue, semi-transparent
-      const mat = new THREE.MeshBasicMaterial({
-        color: 0x3030ee,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.18,
-      });
-      const blob = new THREE.Mesh(geo, mat);
-      scene.add(blob);
-
-      // Second layer — slightly different phase for depth
-      const geo2 = new THREE.IcosahedronGeometry(1.75, 5);
-      const basePositions2 = new Float32Array(geo2.attributes.position.array);
-      const mat2 = new THREE.MeshBasicMaterial({
-        color: 0x3030ee,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.08,
-      });
-      const blob2 = new THREE.Mesh(geo2, mat2);
-      scene.add(blob2);
-
-      let mouseX = 0, mouseY = 0;
-      document.addEventListener('mousemove', (e) => {
-        mouseX = (e.clientX / window.innerWidth - 0.5) * 0.3;
-        mouseY = (e.clientY / window.innerHeight - 0.5) * 0.3;
-      });
-
-      function resize() {
-        const w = canvas.parentElement.clientWidth;
-        const h = canvas.parentElement.clientHeight;
-        renderer.setSize(w, h);
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-      }
-      resize();
-      window.addEventListener('resize', resize);
-
-      let scrollOpacity = 1;
-      window.addEventListener('scroll', () => {
-        scrollOpacity = Math.max(0, 1 - (window.scrollY / window.innerHeight) * 1.2);
-      });
-
-      function distortBlob(geometry, basePos, time, speed, noiseScale, noiseAmt) {
-        const pos = geometry.attributes.position.array;
-        for (let i = 0; i < pos.length; i += 3) {
-          const bx = basePos[i], by = basePos[i+1], bz = basePos[i+2];
-          const len = Math.sqrt(bx*bx + by*by + bz*bz);
-          const nx = bx/len, ny = by/len, nz = bz/len;
-          // Multi-octave noise for organic feel
-          const n1 = noise.noise3D(nx * noiseScale + time * speed, ny * noiseScale + time * speed * 0.8, nz * noiseScale);
-          const n2 = noise.noise3D(nx * noiseScale * 2 + time * speed * 0.5 + 100, ny * noiseScale * 2, nz * noiseScale * 2 + 50) * 0.5;
-          const displacement = (n1 + n2) * noiseAmt;
-          const newLen = len + displacement;
-          pos[i] = nx * newLen;
-          pos[i+1] = ny * newLen;
-          pos[i+2] = nz * newLen;
-        }
-        geometry.attributes.position.needsUpdate = true;
-      }
-
-      function animate() {
-        requestAnimationFrame(animate);
-        const time = performance.now() * 0.001;
-
-        // Distort both layers
-        distortBlob(geo, basePositions, time, 0.3, 1.8, 0.35);
-        distortBlob(geo2, basePositions2, time + 10, 0.25, 2.2, 0.28);
-
-        // Slow rotation
-        blob.rotation.y += 0.0012;
-        blob.rotation.x += 0.0006;
-        blob2.rotation.y += 0.0008;
-        blob2.rotation.x -= 0.0004;
-
-        // Mouse influence
-        blob.rotation.y += mouseX * 0.006;
-        blob.rotation.x += mouseY * 0.006;
-        blob2.rotation.y += mouseX * 0.003;
-        blob2.rotation.x += mouseY * 0.003;
-
-        mat.opacity = 0.18 * scrollOpacity;
-        mat2.opacity = 0.08 * scrollOpacity;
-
-        renderer.render(scene, camera);
-      }
-      animate();
-    })();
-
     // ===== Scroll Reveal =====
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
