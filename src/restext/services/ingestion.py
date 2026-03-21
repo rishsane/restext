@@ -119,60 +119,65 @@ async def _ingest_source(source_id: uuid.UUID, text_content: str | None = None):
             # Filter to only new chunks
             chunks_to_embed = [c for c in all_chunks if c["content_hash"] not in existing_hashes]
 
-            # Step 5: Embed new chunks
+            # Step 5+6: Embed and store in batches of 20 chunks
             if chunks_to_embed:
-                texts = [c["content"] for c in chunks_to_embed]
-                embeddings = await embed_texts(texts)
-
-                # Step 6: Store in Postgres + Qdrant
+                BATCH_SIZE = 20
                 await ensure_collection(source.project_id)
-                qdrant_points = []
+                total_stored = 0
 
-                for chunk_data, embedding in zip(chunks_to_embed, embeddings):
-                    chunk_id = uuid.uuid4()
-                    now = datetime.now(timezone.utc)
+                for batch_start in range(0, len(chunks_to_embed), BATCH_SIZE):
+                    batch = chunks_to_embed[batch_start:batch_start + BATCH_SIZE]
+                    print(f"[INGESTION] Embedding batch {batch_start // BATCH_SIZE + 1} ({len(batch)} chunks)...", flush=True)
 
-                    db_chunk = Chunk(
-                        id=chunk_id,
-                        source_id=source.id,
-                        project_id=source.project_id,
-                        chunk_index=chunk_data["chunk_index"],
-                        content=chunk_data["content"],
-                        content_hash=chunk_data["content_hash"],
-                        token_count=chunk_data["token_count"],
-                        metadata_=chunk_data["metadata"],
-                    )
-                    db.add(db_chunk)
+                    texts = [c["content"] for c in batch]
+                    embeddings = await embed_texts(texts)
+                    qdrant_points = []
 
-                    qdrant_points.append({
-                        "id": str(chunk_id),
-                        "vector": embedding,
-                        "payload": {
-                            "chunk_id": str(chunk_id),
-                            "source_id": str(source.id),
-                            "content": chunk_data["content"],
-                            "source_type": source.source_type,
-                            "source_url": chunk_data["metadata"].get("source_url", ""),
-                            "page_title": chunk_data["metadata"].get("page_title", ""),
-                            "section_heading": chunk_data["metadata"].get("section_heading", ""),
-                            "chunk_index": chunk_data["chunk_index"],
-                            "token_count": chunk_data["token_count"],
-                            "boost_score": 0.0,
-                            "crawled_at": now.isoformat(),
-                        },
-                    })
+                    for chunk_data, embedding in zip(batch, embeddings):
+                        chunk_id = uuid.uuid4()
+                        now = datetime.now(timezone.utc)
 
-                # Commit chunks to Postgres FIRST (so they're available for fallback search)
-                await db.commit()
-                print(f"[INGESTION] Committed {len(chunks_to_embed)} chunks to Postgres", flush=True)
+                        db_chunk = Chunk(
+                            id=chunk_id,
+                            source_id=source.id,
+                            project_id=source.project_id,
+                            chunk_index=chunk_data["chunk_index"],
+                            content=chunk_data["content"],
+                            content_hash=chunk_data["content_hash"],
+                            token_count=chunk_data["token_count"],
+                            metadata_=chunk_data["metadata"],
+                        )
+                        db.add(db_chunk)
 
-                # Then try Qdrant (non-fatal — fallback search still works without vectors)
-                if qdrant_points:
-                    try:
-                        await upsert_vectors(source.project_id, qdrant_points)
-                        print(f"[INGESTION] Upserted {len(qdrant_points)} vectors to Qdrant", flush=True)
-                    except Exception as e:
-                        print(f"[INGESTION] Qdrant upsert failed (non-fatal, Postgres fallback active): {type(e).__name__}: {e}", flush=True)
+                        qdrant_points.append({
+                            "id": str(chunk_id),
+                            "vector": embedding,
+                            "payload": {
+                                "chunk_id": str(chunk_id),
+                                "source_id": str(source.id),
+                                "content": chunk_data["content"],
+                                "source_type": source.source_type,
+                                "source_url": chunk_data["metadata"].get("source_url", ""),
+                                "page_title": chunk_data["metadata"].get("page_title", ""),
+                                "section_heading": chunk_data["metadata"].get("section_heading", ""),
+                                "chunk_index": chunk_data["chunk_index"],
+                                "token_count": chunk_data["token_count"],
+                                "boost_score": 0.0,
+                                "crawled_at": now.isoformat(),
+                            },
+                        })
+
+                    # Commit this batch to Postgres
+                    await db.commit()
+                    total_stored += len(batch)
+                    print(f"[INGESTION] Committed batch to Postgres ({total_stored}/{len(chunks_to_embed)} total)", flush=True)
+
+                    # Try Qdrant (non-fatal)
+                    if qdrant_points:
+                        try:
+                            await upsert_vectors(source.project_id, qdrant_points)
+                        except Exception as e:
+                            print(f"[INGESTION] Qdrant upsert failed (non-fatal): {type(e).__name__}: {e}", flush=True)
 
             # Step 7: Update source status
             total_chunks = await db.scalar(

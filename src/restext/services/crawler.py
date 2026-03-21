@@ -32,7 +32,7 @@ _BOILERPLATE_PATTERNS = [
 _BOILERPLATE_RE = re.compile("|".join(_BOILERPLATE_PATTERNS), re.IGNORECASE)
 
 
-async def crawl_url(url: str, max_pages: int = 50, timeout: int = 10) -> list[dict]:
+async def crawl_url(url: str, max_pages: int = 20, timeout: int = 15) -> list[dict]:
     """Crawl a URL and return extracted content for each page.
 
     Returns list of {"url": str, "title": str, "content": str}
