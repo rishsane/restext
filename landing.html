@@ -8,239 +8,222 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #050508; --surface: #0a0a10; --surface-2: #10101a;
-      --border: #1a1a2e; --border-light: #2a2a4e;
-      --text: #f0f0f5; --text-2: #9898b0; --text-3: #5a5a78;
-      --accent: #3b82f6; --accent-light: #60a5fa; --accent-dark: #2563eb;
-      --accent-glow: rgba(59,130,246,0.12); --accent-glow-strong: rgba(59,130,246,0.25);
-      --cyan: #22d3ee; --purple: #a78bfa; --green: #34d399;
+      --bg: #f0f0fa; --bg-white: #ffffff; --surface: #e8e8f4; --surface-2: #f5f5ff;
+      --border: #d8d8e8; --border-light: #c0c0d8;
+      --text: #0a0a1a; --text-2: #4a4a6a; --text-3: #8888a8;
+      --accent: #3030ee; --accent-light: #5050ff; --accent-dark: #2020cc;
+      --accent-glow: rgba(48,48,238,0.08);
+      --cyan: #0ea5e9; --green: #10b981; --purple: #7c3aed;
     }
     html { scroll-behavior: smooth; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
 
     /* ===== Nav ===== */
-    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(5,5,8,0.7); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(26,26,46,0.5); }
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(240,240,250,0.8); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(216,216,232,0.5); }
     .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
-    .nav-logo { font-size: 18px; font-weight: 700; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; letter-spacing: -0.02em; }
-    .nav-logo .logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent-glow-strong); }
+    .nav-logo { font-size: 20px; font-weight: 800; color: var(--text); text-decoration: none; letter-spacing: -0.03em; }
     .nav-links { display: flex; align-items: center; gap: 36px; }
     .nav-links a { color: var(--text-3); text-decoration: none; font-size: 14px; transition: color 0.2s; }
     .nav-links a:hover { color: var(--text); }
     .nav-cta { display: flex; gap: 10px; align-items: center; }
 
     /* ===== Buttons ===== */
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 22px; border-radius: 10px; font-size: 14px; font-weight: 500; text-decoration: none; cursor: pointer; transition: all 0.25s; border: none; font-family: inherit; }
-    .btn-primary { background: var(--accent); color: #fff; }
-    .btn-primary:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 8px 30px rgba(59,130,246,0.3); }
-    .btn-secondary { background: rgba(255,255,255,0.04); color: var(--text-2); border: 1px solid var(--border); }
-    .btn-secondary:hover { background: rgba(255,255,255,0.08); color: var(--text); border-color: var(--border-light); }
-    .btn-lg { padding: 16px 32px; font-size: 16px; border-radius: 12px; }
-    .btn-sm { padding: 8px 16px; font-size: 13px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 22px; border-radius: 100px; font-size: 14px; font-weight: 500; text-decoration: none; cursor: pointer; transition: all 0.25s; border: none; font-family: inherit; }
+    .btn-primary { background: var(--text); color: #fff; }
+    .btn-primary:hover { background: #222; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+    .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border-light); }
+    .btn-secondary:hover { background: var(--bg-white); border-color: var(--text-3); }
+    .btn-accent { background: var(--accent); color: #fff; }
+    .btn-accent:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(48,48,238,0.25); }
+    .btn-lg { padding: 16px 36px; font-size: 16px; }
+    .btn-sm { padding: 8px 18px; font-size: 13px; }
+    .btn-pill { border-radius: 100px; }
 
     /* ===== Hero ===== */
-    .hero { position: relative; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 120px 32px 80px; overflow: hidden; }
-    #heroCanvas { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; pointer-events: none; z-index: 0; }
-    .hero-content { position: relative; z-index: 2; text-align: center; max-width: 800px; }
-    .hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 18px; background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); border-radius: 100px; font-size: 13px; color: var(--accent-light); margin-bottom: 28px; backdrop-filter: blur(8px); }
-    .hero-badge .pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-light); animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
-    .hero h1 { font-size: clamp(40px, 6vw, 72px); font-weight: 800; line-height: 1.05; letter-spacing: -0.04em; margin-bottom: 24px; }
-    .hero h1 .accent { background: linear-gradient(135deg, var(--accent-light), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .hero p { font-size: 19px; color: var(--text-2); max-width: 520px; margin: 0 auto 40px; line-height: 1.7; }
-    .hero-cta { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; }
-    .scroll-hint { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--text-3); font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; animation: bob 2s ease-in-out infinite; }
-    .scroll-hint .line { width: 1px; height: 32px; background: linear-gradient(to bottom, var(--accent), transparent); }
-    @keyframes bob { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
+    .hero { position: relative; min-height: 100vh; display: flex; flex-direction: column; padding: 140px 32px 60px; overflow: hidden; }
+    .hero-inner { max-width: 1200px; margin: 0 auto; width: 100%; position: relative; z-index: 2; }
+    #heroCanvas { position: absolute; top: 50%; left: 55%; transform: translate(-50%, -50%); width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+    .hero h1 { font-size: clamp(52px, 8vw, 110px); font-weight: 800; line-height: 0.95; letter-spacing: -0.05em; margin-bottom: 0; color: var(--text); max-width: 900px; }
+    .hero h1 .line2 { display: block; }
+    .hero-bottom { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 60px; }
+    .hero-desc { max-width: 440px; }
+    .hero-desc p { font-size: 17px; color: var(--text-2); line-height: 1.7; margin-bottom: 28px; }
+    .hero-scroll { display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--text-3); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; }
+    .hero-scroll .line { width: 1px; height: 40px; background: linear-gradient(to bottom, var(--text-3), transparent); animation: bob 2.5s ease-in-out infinite; }
+    @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
 
-    /* ===== Reveal animations ===== */
-    .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+    /* Blue arc decoration */
+    .hero-arc { position: absolute; top: -100px; left: -200px; width: 700px; height: 700px; border-radius: 50%; border: 80px solid var(--accent); opacity: 0.07; z-index: 0; pointer-events: none; }
+
+    /* ===== Reveal ===== */
+    .reveal { opacity: 0; transform: translateY(50px); transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
     .reveal.visible { opacity: 1; transform: translateY(0); }
-    .reveal-left { opacity: 0; transform: translateX(-60px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+    .reveal-left { opacity: 0; transform: translateX(-60px); transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
     .reveal-left.visible { opacity: 1; transform: translateX(0); }
-    .reveal-right { opacity: 0; transform: translateX(60px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+    .reveal-right { opacity: 0; transform: translateX(60px); transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
     .reveal-right.visible { opacity: 1; transform: translateX(0); }
-    .reveal-scale { opacity: 0; transform: scale(0.9); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+    .reveal-scale { opacity: 0; transform: scale(0.92); transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
     .reveal-scale.visible { opacity: 1; transform: scale(1); }
 
     /* ===== Sections ===== */
     section { padding: 120px 32px; position: relative; }
     .section-inner { max-width: 1200px; margin: 0 auto; }
-    .section-label { font-size: 12px; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; font-weight: 600; margin-bottom: 16px; }
-    .section-title { font-size: clamp(30px, 4vw, 44px); font-weight: 700; letter-spacing: -0.03em; margin-bottom: 16px; line-height: 1.15; }
+    .section-label { font-size: 12px; color: var(--accent); text-transform: uppercase; letter-spacing: 2.5px; font-weight: 600; margin-bottom: 16px; }
+    .section-title { font-size: clamp(32px, 4.5vw, 56px); font-weight: 800; letter-spacing: -0.04em; margin-bottom: 16px; line-height: 1.05; }
     .section-desc { font-size: 17px; color: var(--text-2); max-width: 520px; line-height: 1.7; }
 
-    /* ===== Code Hero ===== */
-    .code-hero { max-width: 680px; margin: 80px auto 0; position: relative; }
-    .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; text-align: left; box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px var(--accent-glow); }
-    .code-header { display: flex; align-items: center; gap: 8px; padding: 14px 18px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.02); }
+    /* ===== Code Section ===== */
+    .code-section { background: var(--text); border-radius: 24px; overflow: hidden; max-width: 780px; margin: 80px auto 0; box-shadow: 0 24px 60px rgba(0,0,0,0.2); }
+    .code-header { display: flex; align-items: center; gap: 8px; padding: 16px 20px; background: #1a1a2e; }
     .code-dot { width: 10px; height: 10px; border-radius: 50%; }
     .code-dot:nth-child(1) { background: #ef4444; }
     .code-dot:nth-child(2) { background: #eab308; }
     .code-dot:nth-child(3) { background: #22c55e; }
-    .code-header span { font-size: 12px; color: var(--text-3); margin-left: 10px; font-family: monospace; }
-    .code-body { padding: 24px; font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace; font-size: 13px; line-height: 1.9; overflow-x: auto; }
-    .code-body .cmt { color: var(--text-3); }
-    .code-body .kw { color: var(--purple); }
-    .code-body .str { color: var(--green); }
-    .code-body .fn { color: var(--accent-light); }
-    .code-body .const { color: var(--cyan); }
+    .code-header span { font-size: 12px; color: #666; margin-left: 10px; font-family: monospace; }
+    .code-body { padding: 28px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; line-height: 1.9; color: #ccc; overflow-x: auto; }
+    .code-body .cmt { color: #555; }
+    .code-body .kw { color: #c084fc; }
+    .code-body .str { color: #34d399; }
+    .code-body .fn { color: #60a5fa; }
 
-    /* ===== How It Works — Sticky scroll panels ===== */
-    .how-section { padding: 0; }
-    .how-sticky-wrap { position: relative; }
-    .how-panels { position: relative; }
-    .how-panel { min-height: 100vh; display: flex; align-items: center; padding: 80px 32px; position: relative; }
-    .how-panel-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; width: 100%; }
+    /* ===== How It Works ===== */
+    .how-section { background: var(--bg-white); }
+    .how-panels { margin-top: 80px; }
+    .how-panel { padding: 100px 0; border-top: 1px solid var(--border); }
+    .how-panel:last-child { border-bottom: 1px solid var(--border); }
+    .how-panel-inner { max-width: 1200px; margin: 0 auto; padding: 0 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
     .how-panel:nth-child(even) .how-panel-inner { direction: rtl; }
     .how-panel:nth-child(even) .how-panel-inner > * { direction: ltr; }
-    .how-num { font-size: 120px; font-weight: 900; color: rgba(59,130,246,0.06); line-height: 1; margin-bottom: -20px; letter-spacing: -0.05em; }
-    .how-title { font-size: 32px; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.02em; }
-    .how-desc { font-size: 16px; color: var(--text-2); line-height: 1.8; margin-bottom: 24px; }
-    .how-visual { display: flex; align-items: center; justify-content: center; }
-    .how-visual-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 40px; width: 100%; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
-    .how-visual-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, var(--accent-glow) 0%, transparent 70%); }
+    .how-num { font-size: 13px; font-weight: 700; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+    .how-title { font-size: 36px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 16px; line-height: 1.1; }
+    .how-desc { font-size: 16px; color: var(--text-2); line-height: 1.8; }
 
-    /* Visual elements inside cards */
-    .vis-nodes { position: relative; width: 200px; height: 200px; }
-    .vis-node { position: absolute; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 20px var(--accent-glow-strong); animation: float 3s ease-in-out infinite; }
-    .vis-node:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
-    .vis-node:nth-child(2) { top: 60%; left: 80%; animation-delay: 0.5s; background: var(--cyan); box-shadow: 0 0 20px rgba(34,211,238,0.3); }
-    .vis-node:nth-child(3) { top: 80%; left: 30%; animation-delay: 1s; background: var(--purple); box-shadow: 0 0 20px rgba(167,139,250,0.3); }
-    .vis-node:nth-child(4) { top: 10%; left: 70%; animation-delay: 1.5s; }
-    .vis-node:nth-child(5) { top: 50%; left: 45%; animation-delay: 0.8s; width: 16px; height: 16px; background: var(--accent-light); }
-    .vis-line { position: absolute; background: linear-gradient(90deg, var(--accent), var(--cyan)); height: 1px; transform-origin: left center; opacity: 0.3; }
-    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+    .how-visual-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 24px; padding: 48px; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+    .how-visual-card:hover { transform: scale(1.02); }
 
-    .vis-chunks { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 220px; }
-    .vis-chunk { height: 48px; border-radius: 8px; background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(34,211,238,0.08)); border: 1px solid rgba(59,130,246,0.2); animation: chunkPulse 2s ease-in-out infinite; }
+    /* Visual elements */
+    .vis-key { font-family: monospace; font-size: 16px; color: var(--accent); background: rgba(48,48,238,0.06); border: 1px dashed rgba(48,48,238,0.2); border-radius: 12px; padding: 20px 32px; letter-spacing: 2px; position: relative; z-index: 1; }
+    .vis-key-label { font-size: 12px; color: var(--text-3); margin-top: 12px; font-family: sans-serif; letter-spacing: 0; }
+
+    .vis-nodes { position: relative; width: 220px; height: 220px; }
+    .vis-node { position: absolute; border-radius: 50%; background: var(--accent); animation: float 3s ease-in-out infinite; }
+    .vis-node:nth-child(1) { width: 14px; height: 14px; top: 15%; left: 10%; animation-delay: 0s; }
+    .vis-node:nth-child(2) { width: 10px; height: 10px; top: 55%; left: 85%; animation-delay: 0.5s; background: var(--cyan); }
+    .vis-node:nth-child(3) { width: 12px; height: 12px; top: 80%; left: 25%; animation-delay: 1s; background: var(--purple); }
+    .vis-node:nth-child(4) { width: 8px; height: 8px; top: 10%; left: 75%; animation-delay: 1.5s; }
+    .vis-node:nth-child(5) { width: 18px; height: 18px; top: 45%; left: 42%; animation-delay: 0.8s; background: var(--accent); opacity: 0.6; }
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+
+    .vis-chunks { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 240px; }
+    .vis-chunk { height: 52px; border-radius: 10px; background: linear-gradient(135deg, rgba(48,48,238,0.08), rgba(14,165,233,0.05)); border: 1px solid rgba(48,48,238,0.12); animation: chunkPulse 2.5s ease-in-out infinite; }
     .vis-chunk:nth-child(2) { animation-delay: 0.3s; }
     .vis-chunk:nth-child(3) { animation-delay: 0.6s; grid-column: span 2; }
     .vis-chunk:nth-child(4) { animation-delay: 0.9s; }
     .vis-chunk:nth-child(5) { animation-delay: 1.2s; }
-    @keyframes chunkPulse { 0%,100% { opacity: 0.6; } 50% { opacity: 1; } }
+    @keyframes chunkPulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
 
-    .vis-query { width: 260px; text-align: left; }
-    .vis-query-bar { background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25); border-radius: 10px; padding: 12px 16px; font-size: 13px; color: var(--text-2); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-    .vis-query-bar .cursor { width: 1px; height: 16px; background: var(--accent); animation: blink 1s infinite; }
+    .vis-query { width: 280px; text-align: left; }
+    .vis-query-bar { background: var(--bg-white); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; font-size: 14px; color: var(--text-2); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .vis-query-bar .cursor { width: 1.5px; height: 18px; background: var(--accent); animation: blink 1s infinite; }
     @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
-    .vis-result { background: rgba(34,211,238,0.06); border: 1px solid rgba(34,211,238,0.15); border-radius: 8px; padding: 10px 14px; margin-bottom: 6px; animation: slideUp 0.5s ease-out both; }
-    .vis-result:nth-child(3) { animation-delay: 0.2s; }
-    .vis-result:nth-child(4) { animation-delay: 0.4s; }
-    .vis-result .score { font-size: 11px; color: var(--cyan); font-weight: 600; }
-    .vis-result .text { font-size: 11px; color: var(--text-3); margin-top: 2px; }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .vis-result { background: var(--bg-white); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.03); }
+    .vis-result .score { font-size: 12px; color: var(--accent); font-weight: 700; }
+    .vis-result .text { font-size: 12px; color: var(--text-3); margin-top: 3px; }
 
-    .vis-inject { width: 260px; text-align: left; }
-    .vis-prompt { background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.2); border-radius: 10px; padding: 14px; font-size: 11px; color: var(--text-3); line-height: 1.7; font-family: monospace; }
-    .vis-prompt .highlight { color: var(--accent-light); background: rgba(59,130,246,0.1); padding: 2px 4px; border-radius: 3px; }
-
-    /* ===== Features Grid ===== */
-    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 60px; }
-    .feature { padding: 32px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; transition: all 0.3s; position: relative; overflow: hidden; }
-    .feature::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--accent-glow-strong), transparent); opacity: 0; transition: opacity 0.3s; }
-    .feature:hover { border-color: var(--border-light); transform: translateY(-2px); }
-    .feature:hover::after { opacity: 1; }
+    /* ===== Features ===== */
+    .features-section { background: var(--bg-white); }
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 60px; background: var(--border); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
+    .feature { padding: 36px; background: var(--bg-white); transition: all 0.3s; }
+    .feature:hover { background: var(--surface-2); }
     .feature-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; font-size: 20px; background: var(--accent-glow); }
-    .feature h4 { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
+    .feature h4 { font-size: 16px; font-weight: 700; margin-bottom: 10px; }
     .feature p { font-size: 14px; color: var(--text-2); line-height: 1.65; }
 
     /* ===== Pricing ===== */
     .pricing-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 60px; }
-    .price-card { padding: 36px 28px; background: var(--surface); border: 1px solid var(--border); border-radius: 18px; display: flex; flex-direction: column; transition: all 0.3s; }
-    .price-card:hover { border-color: var(--border-light); }
-    .price-card.featured { border-color: var(--accent); background: linear-gradient(180deg, rgba(59,130,246,0.06) 0%, var(--surface) 50%); position: relative; }
+    .price-card { padding: 36px 28px; background: var(--bg-white); border: 1px solid var(--border); border-radius: 20px; display: flex; flex-direction: column; transition: all 0.3s; }
+    .price-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.06); }
+    .price-card.featured { border-color: var(--accent); position: relative; box-shadow: 0 4px 20px rgba(48,48,238,0.1); }
     .price-card.featured::before { content: 'Most Popular'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #fff; padding: 4px 16px; border-radius: 100px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-    .price-tier { font-size: 14px; font-weight: 600; color: var(--text-2); margin-bottom: 10px; }
-    .price-amount { font-size: 44px; font-weight: 800; letter-spacing: -0.04em; margin-bottom: 4px; }
+    .price-tier { font-size: 14px; font-weight: 700; color: var(--text-2); margin-bottom: 10px; }
+    .price-amount { font-size: 48px; font-weight: 900; letter-spacing: -0.04em; margin-bottom: 4px; }
     .price-amount .mo { font-size: 16px; font-weight: 400; color: var(--text-3); }
     .price-desc { font-size: 14px; color: var(--text-3); margin-bottom: 28px; line-height: 1.5; }
     .price-features { list-style: none; flex: 1; margin-bottom: 28px; }
     .price-features li { font-size: 13px; color: var(--text-2); padding: 7px 0; display: flex; align-items: flex-start; gap: 10px; }
-    .price-features li::before { content: ''; display: inline-block; width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2.5'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/contain no-repeat; }
+    .price-features li::before { content: ''; display: inline-block; width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233030ee' stroke-width='2.5'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/contain no-repeat; }
     .price-card .btn { width: 100%; }
 
-    /* ===== Use Cases — Horizontal scroll ===== */
-    .usecases-track { display: flex; gap: 20px; margin-top: 60px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: 20px; }
-    .usecases-track::-webkit-scrollbar { height: 4px; }
-    .usecases-track::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-    .usecase { min-width: 360px; max-width: 400px; padding: 36px; background: var(--surface); border: 1px solid var(--border); border-radius: 18px; scroll-snap-align: start; flex-shrink: 0; transition: all 0.3s; }
-    .usecase:hover { border-color: var(--border-light); }
-    .usecase-tag { display: inline-block; padding: 4px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; text-transform: uppercase; margin-bottom: 16px; letter-spacing: 0.5px; }
-    .usecase-tag.support { background: rgba(59,130,246,0.1); color: var(--accent-light); }
-    .usecase-tag.sales { background: rgba(167,139,250,0.1); color: var(--purple); }
-    .usecase-tag.dev { background: rgba(34,211,238,0.1); color: var(--cyan); }
-    .usecase h4 { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+    /* ===== Use Cases ===== */
+    .usecases-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 60px; }
+    .usecase { padding: 36px; background: var(--bg-white); border: 1px solid var(--border); border-radius: 20px; transition: all 0.3s; }
+    .usecase:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.06); }
+    .usecase-tag { display: inline-block; padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 16px; letter-spacing: 0.5px; }
+    .usecase-tag.support { background: rgba(48,48,238,0.08); color: var(--accent); }
+    .usecase-tag.sales { background: rgba(124,58,237,0.08); color: var(--purple); }
+    .usecase-tag.dev { background: rgba(14,165,233,0.08); color: var(--cyan); }
+    .usecase h4 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
     .usecase p { font-size: 14px; color: var(--text-2); line-height: 1.7; }
 
     /* ===== CTA ===== */
-    .cta-section { text-align: center; padding: 140px 32px; position: relative; overflow: hidden; }
-    .cta-section::before { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 800px; height: 400px; background: radial-gradient(ellipse, var(--accent-glow-strong) 0%, transparent 70%); pointer-events: none; }
-    .cta-section h2 { font-size: clamp(30px, 4vw, 44px); font-weight: 700; margin-bottom: 16px; letter-spacing: -0.02em; position: relative; z-index: 1; }
-    .cta-section p { font-size: 17px; color: var(--text-2); margin-bottom: 36px; max-width: 480px; margin-left: auto; margin-right: auto; position: relative; z-index: 1; }
+    .cta-section { text-align: center; padding: 140px 32px; background: var(--text); color: #fff; position: relative; overflow: hidden; }
+    .cta-section::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(48,48,238,0.15) 0%, transparent 70%); pointer-events: none; }
+    .cta-section h2 { font-size: clamp(32px, 5vw, 52px); font-weight: 800; margin-bottom: 16px; letter-spacing: -0.03em; position: relative; z-index: 1; }
+    .cta-section p { font-size: 17px; color: #888; margin-bottom: 36px; max-width: 480px; margin-left: auto; margin-right: auto; position: relative; z-index: 1; }
+    .cta-section .btn-accent { position: relative; z-index: 1; }
 
     /* ===== Footer ===== */
-    footer { padding: 48px 32px; border-top: 1px solid var(--border); }
+    footer { padding: 40px 32px; background: var(--text); border-top: 1px solid #222; }
     .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-    .footer-inner p { font-size: 13px; color: var(--text-3); }
+    .footer-inner p { font-size: 13px; color: #555; }
     .footer-links { display: flex; gap: 28px; }
-    .footer-links a { font-size: 13px; color: var(--text-3); text-decoration: none; transition: color 0.2s; }
-    .footer-links a:hover { color: var(--text-2); }
+    .footer-links a { font-size: 13px; color: #555; text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: #999; }
 
     /* ===== Signup Modal ===== */
-    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(5,5,8,0.8); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(10,10,26,0.5); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
     .modal-overlay.open { display: flex; }
-    .signup-modal { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; width: 440px; max-width: 90vw; padding: 40px; text-align: center; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
-    .signup-modal h3 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+    .signup-modal { background: var(--bg-white); border: 1px solid var(--border); border-radius: 24px; width: 440px; max-width: 90vw; padding: 44px; text-align: center; position: relative; box-shadow: 0 24px 60px rgba(0,0,0,0.15); }
+    .signup-modal h3 { font-size: 26px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.02em; }
     .signup-modal .subtitle { font-size: 15px; color: var(--text-2); margin-bottom: 28px; }
     .signup-form { display: flex; flex-direction: column; gap: 12px; }
-    .signup-form input { width: 100%; padding: 13px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: 14px; outline: none; font-family: inherit; transition: border-color 0.2s; }
+    .signup-form input { width: 100%; padding: 14px 18px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-size: 15px; outline: none; font-family: inherit; transition: border-color 0.2s; }
     .signup-form input:focus { border-color: var(--accent); }
     .signup-form .btn { width: 100%; }
-    .signup-result { margin-top: 16px; text-align: left; }
-    .key-display { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; font-family: 'SF Mono', monospace; font-size: 13px; word-break: break-all; color: var(--green); margin: 14px 0; position: relative; }
-    .key-display .copy-btn { position: absolute; right: 10px; top: 10px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text-3); font-size: 11px; padding: 4px 10px; cursor: pointer; transition: all 0.2s; }
+    .key-display { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; font-family: 'SF Mono', monospace; font-size: 13px; word-break: break-all; color: var(--green); margin: 14px 0; position: relative; text-align: left; }
+    .key-display .copy-btn { position: absolute; right: 10px; top: 10px; background: var(--bg-white); border: 1px solid var(--border); border-radius: 8px; color: var(--text-3); font-size: 12px; padding: 5px 12px; cursor: pointer; transition: all 0.2s; }
     .key-display .copy-btn:hover { color: var(--text); border-color: var(--border-light); }
-    .signup-steps { text-align: left; margin-top: 16px; font-size: 13px; color: var(--text-2); line-height: 1.7; }
-    .signup-steps li { margin-bottom: 8px; padding-left: 4px; }
-
-    /* ===== Divider ===== */
-    .section-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); max-width: 1200px; margin: 0 auto; }
+    .signup-steps { text-align: left; margin-top: 16px; font-size: 14px; color: var(--text-2); line-height: 1.8; }
+    .signup-steps li { margin-bottom: 6px; }
 
     /* ===== Responsive ===== */
     @media (max-width: 1024px) {
-      .how-panel-inner { grid-template-columns: 1fr; gap: 40px; text-align: center; }
+      .how-panel-inner { grid-template-columns: 1fr; gap: 40px; }
       .how-panel:nth-child(even) .how-panel-inner { direction: ltr; }
-      .how-visual { order: -1; }
       .features-grid { grid-template-columns: repeat(2, 1fr); }
       .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+      .usecases-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 600px) {
       .features-grid, .pricing-grid { grid-template-columns: 1fr; }
       .nav-links { display: none; }
-      .hero h1 { font-size: 34px; }
+      .hero h1 { font-size: 40px; }
+      .hero-bottom { flex-direction: column; align-items: flex-start; gap: 40px; }
       .footer-inner { flex-direction: column; gap: 16px; text-align: center; }
-      .how-panel { padding: 60px 20px; }
     }
 
     /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
-    /* ===== Grain overlay ===== */
-    .grain { position: fixed; inset: 0; pointer-events: none; z-index: 999; opacity: 0.03; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
-
-    /* ===== Horizontal line accents ===== */
-    .h-line { position: absolute; height: 1px; background: linear-gradient(90deg, transparent, var(--accent-glow-strong), transparent); }
   </style>
 </head>
 <body>
-  <div class="grain"></div>
 
   <!-- Nav -->
   <nav>
     <div class="nav-inner">
-      <a href="/" class="nav-logo"><span class="logo-dot"></span> Restext</a>
+      <a href="/" class="nav-logo">Restext</a>
       <div class="nav-links">
         <a href="#how-it-works">How It Works</a>
         <a href="#features">Features</a>
@@ -248,40 +231,43 @@
         <a href="/docs" target="_blank">Docs</a>
       </div>
       <div class="nav-cta">
-        <a href="/dashboard" class="btn btn-secondary btn-sm">Dashboard</a>
-        <button class="btn btn-primary btn-sm" onclick="openSignup()">Get API Key</button>
+        <a href="/dashboard" class="btn btn-secondary btn-sm btn-pill">Dashboard</a>
+        <button class="btn btn-primary btn-sm btn-pill" onclick="openSignup()">Get API Key</button>
       </div>
     </div>
   </nav>
 
   <!-- Hero -->
   <section class="hero">
+    <div class="hero-arc"></div>
     <canvas id="heroCanvas"></canvas>
-    <div class="hero-content">
-      <div class="hero-badge"><span class="pulse"></span> Now in public beta</div>
-      <h1>Give your AI agent<br><span class="accent">a brain</span> in 5 minutes</h1>
-      <p>Drop-in context API for AI agents. Ingest docs, websites, and files. Query with one call. No vector DB, no embedding pipeline, no infra.</p>
-      <div class="hero-cta">
-        <button class="btn btn-primary btn-lg" onclick="openSignup()">Get Free API Key</button>
-        <a href="#how-it-works" class="btn btn-secondary btn-lg">See How It Works</a>
+    <div class="hero-inner">
+      <h1>Context engine<span class="line2">for AI agents</span></h1>
+      <div class="hero-bottom">
+        <div class="hero-desc">
+          <p>Drop-in RAG API for AI agents. Ingest docs, websites, and files. Query with one call. No vector DB, no embedding pipeline, no infra to manage.</p>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <button class="btn btn-primary btn-lg btn-pill" onclick="openSignup()">Get Free API Key</button>
+            <a href="#how-it-works" class="btn btn-secondary btn-lg btn-pill">How It Works</a>
+          </div>
+        </div>
+        <div class="hero-scroll">
+          <span>Scroll</span>
+          <div class="line"></div>
+        </div>
       </div>
-    </div>
-    <div class="scroll-hint">
-      <span>Scroll</span>
-      <div class="line"></div>
     </div>
   </section>
 
-  <!-- Code Preview -->
-  <section style="padding-top: 0;">
+  <!-- Code -->
+  <section style="padding-top: 0; padding-bottom: 140px;">
     <div class="section-inner">
-      <div class="code-hero reveal-scale">
-        <div class="code-block">
-          <div class="code-header">
-            <span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span>
-            <span>integration.py</span>
-          </div>
-          <div class="code-body">
+      <div class="code-section reveal-scale">
+        <div class="code-header">
+          <span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span>
+          <span>integration.py</span>
+        </div>
+        <div class="code-body">
 <span class="kw">import</span> requests<br><br>
 <span class="cmt"># 1. Add a source (one-time)</span><br>
 requests.<span class="fn">post</span>(<span class="str">"https://api.restext.dev/v1/projects/{id}/sources"</span>,<br>
@@ -293,50 +279,43 @@ ctx = requests.<span class="fn">post</span>(<span class="str">"https://api.reste
 &nbsp;&nbsp;json={<span class="str">"query"</span>: user_message}).<span class="fn">json</span>()<br><br>
 <span class="cmt"># 3. Inject into your agent's system prompt</span><br>
 system_prompt += ctx[<span class="str">"context_text"</span>]  <span class="cmt"># done.</span>
-          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <div class="section-divider"></div>
-
-  <!-- How It Works — Full-viewport scroll panels -->
+  <!-- How It Works -->
   <section id="how-it-works" class="how-section">
-    <div class="section-inner" style="padding: 80px 0 0;">
+    <div class="section-inner">
       <div class="section-label reveal">How It Works</div>
-      <div class="section-title reveal">From zero to context in 4 steps</div>
-      <div class="section-desc reveal">No infrastructure to set up. No models to fine-tune. Just API calls.</div>
+      <div class="section-title reveal">From zero to context<br>in 4 steps</div>
     </div>
     <div class="how-panels">
-      <!-- Step 1 -->
       <div class="how-panel">
         <div class="how-panel-inner">
           <div class="reveal-left">
-            <div class="how-num">01</div>
+            <div class="how-num">Step 01</div>
             <div class="how-title">Get your API key</div>
-            <div class="how-desc">Sign up with your email. Instant key, no credit card required. Start building on the free tier with 1,000 queries per month.</div>
-            <button class="btn btn-primary" onclick="openSignup()">Get Free API Key</button>
+            <div class="how-desc">Sign up with your email. Instant key, no credit card. Start on the free tier with 1,000 queries per month. Takes 10 seconds.</div>
           </div>
-          <div class="how-visual reveal-right">
+          <div class="reveal-right">
             <div class="how-visual-card">
               <div style="text-align:center; position:relative; z-index:1;">
-                <div style="font-family:monospace; font-size:14px; color:var(--accent-light); background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.2); border-radius:10px; padding:16px 24px; letter-spacing:1px;">rst_live_*****</div>
-                <div style="margin-top:16px; font-size:12px; color:var(--text-3);">Your API key is ready</div>
+                <div class="vis-key">rst_live_*************</div>
+                <div class="vis-key-label">Your API key is ready</div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <!-- Step 2 -->
       <div class="how-panel">
         <div class="how-panel-inner">
           <div class="reveal-right">
-            <div class="how-num">02</div>
+            <div class="how-num">Step 02</div>
             <div class="how-title">Create a project</div>
-            <div class="how-desc">A project is a knowledge namespace. One per product, team, or use case. Keeps context isolated and relevant. No cross-contamination.</div>
+            <div class="how-desc">A project is a knowledge namespace. One per product, team, or use case. Keeps context isolated. No cross-contamination between agents.</div>
           </div>
-          <div class="how-visual reveal-left">
+          <div class="reveal-left">
             <div class="how-visual-card">
               <div class="vis-nodes" style="position:relative; z-index:1;">
                 <div class="vis-node"></div>
@@ -344,27 +323,25 @@ system_prompt += ctx[<span class="str">"context_text"</span>]  <span class="cmt"
                 <div class="vis-node"></div>
                 <div class="vis-node"></div>
                 <div class="vis-node"></div>
-                <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.15;" viewBox="0 0 200 200">
-                  <line x1="26" y1="46" x2="166" y2="126" stroke="#3b82f6" stroke-width="1"/>
-                  <line x1="96" y1="106" x2="146" y2="26" stroke="#22d3ee" stroke-width="1"/>
-                  <line x1="26" y1="46" x2="66" y2="166" stroke="#a78bfa" stroke-width="1"/>
-                  <line x1="96" y1="106" x2="26" y2="46" stroke="#3b82f6" stroke-width="1"/>
-                  <line x1="146" y1="26" x2="166" y2="126" stroke="#3b82f6" stroke-width="1"/>
+                <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.12;" viewBox="0 0 220 220">
+                  <line x1="28" y1="39" x2="193" y2="127" stroke="#3030ee" stroke-width="1.5"/>
+                  <line x1="100" y1="105" x2="170" y2="28" stroke="#0ea5e9" stroke-width="1.5"/>
+                  <line x1="28" y1="39" x2="61" y2="182" stroke="#7c3aed" stroke-width="1.5"/>
+                  <line x1="100" y1="105" x2="28" y2="39" stroke="#3030ee" stroke-width="1.5"/>
                 </svg>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <!-- Step 3 -->
       <div class="how-panel">
         <div class="how-panel-inner">
           <div class="reveal-left">
-            <div class="how-num">03</div>
+            <div class="how-num">Step 03</div>
             <div class="how-title">Add sources</div>
-            <div class="how-desc">Point us at URLs, upload files, or paste text. We auto-crawl, chunk, and embed everything. JS-rendered sites included via Playwright.</div>
+            <div class="how-desc">Point us at URLs, upload files, or paste text. We auto-crawl, chunk, and embed everything. JS-rendered sites handled via Playwright.</div>
           </div>
-          <div class="how-visual reveal-right">
+          <div class="reveal-right">
             <div class="how-visual-card">
               <div class="vis-chunks" style="position:relative; z-index:1;">
                 <div class="vis-chunk"></div>
@@ -377,15 +354,14 @@ system_prompt += ctx[<span class="str">"context_text"</span>]  <span class="cmt"
           </div>
         </div>
       </div>
-      <!-- Step 4 -->
       <div class="how-panel">
         <div class="how-panel-inner">
           <div class="reveal-right">
-            <div class="how-num">04</div>
+            <div class="how-num">Step 04</div>
             <div class="how-title">Query from your agent</div>
             <div class="how-desc">One POST request returns ranked, relevant context ready to inject into any LLM's system prompt. Hybrid search with BM25 + dense vectors.</div>
           </div>
-          <div class="how-visual reveal-left">
+          <div class="reveal-left">
             <div class="how-visual-card">
               <div class="vis-query" style="position:relative; z-index:1;">
                 <div class="vis-query-bar">How does pricing work?<span class="cursor"></span></div>
@@ -400,72 +376,68 @@ system_prompt += ctx[<span class="str">"context_text"</span>]  <span class="cmt"
     </div>
   </section>
 
-  <div class="section-divider"></div>
-
   <!-- Features -->
-  <section id="features">
+  <section id="features" class="features-section">
     <div class="section-inner">
       <div class="section-label reveal">Features</div>
-      <div class="section-title reveal">Everything your agent needs to be smart</div>
-      <div class="section-desc reveal">Built for production AI agents. Not a toy demo.</div>
-      <div class="features-grid">
-        <div class="feature reveal" style="transition-delay:0ms;">
+      <div class="section-title reveal">Everything your agent<br>needs to be smart</div>
+      <div class="section-desc reveal" style="margin-bottom:60px;">Built for production. Not a demo.</div>
+      <div class="features-grid reveal-scale">
+        <div class="feature">
           <div class="feature-icon">&#9889;</div>
           <h4>Hybrid Search</h4>
-          <p>Dense vector + BM25 sparse retrieval. Better recall than vector-only, especially for technical content and exact terms.</p>
+          <p>Dense vector + BM25 sparse retrieval. Better recall than vector-only, especially for technical content.</p>
         </div>
-        <div class="feature reveal" style="transition-delay:80ms;">
+        <div class="feature">
           <div class="feature-icon">&#127760;</div>
           <h4>Auto-Crawling</h4>
-          <p>Point us at a URL or sitemap. We crawl, parse, and re-index on schedule. JS-rendered sites handled with Playwright.</p>
+          <p>Point us at a URL or sitemap. We crawl, parse, and re-index on schedule. JS-rendered sites included.</p>
         </div>
-        <div class="feature reveal" style="transition-delay:160ms;">
+        <div class="feature">
           <div class="feature-icon">&#128200;</div>
           <h4>Smart Chunking</h4>
-          <p>Context-aware chunking preserves document structure. Section headings, code blocks, and lists stay intact.</p>
+          <p>Context-aware chunking preserves document structure. Headings, code blocks, and lists stay intact.</p>
         </div>
-        <div class="feature reveal" style="transition-delay:240ms;">
+        <div class="feature">
           <div class="feature-icon">&#128161;</div>
           <h4>Freshness Re-ranking</h4>
-          <p>Recent content ranks higher. Stale docs don't pollute answers. Time-weighted scoring built in.</p>
+          <p>Recent content ranks higher automatically. Stale docs don't pollute your agent's answers.</p>
         </div>
-        <div class="feature reveal" style="transition-delay:320ms;">
+        <div class="feature">
           <div class="feature-icon">&#128270;</div>
           <h4>Source Discovery</h4>
-          <p>Tell us a topic — we find relevant URLs across the web and auto-ingest them into your project.</p>
+          <p>Tell us a topic. We find relevant URLs across the web and auto-ingest them into your project.</p>
         </div>
-        <div class="feature reveal" style="transition-delay:400ms;">
+        <div class="feature">
           <div class="feature-icon">&#128202;</div>
           <h4>Query Analytics</h4>
-          <p>See what users ask, which chunks return, latency percentiles. Understand and improve your agent's knowledge.</p>
+          <p>See what users ask, which chunks return, latency percentiles. Understand your agent's knowledge.</p>
         </div>
-        <div class="feature reveal" style="transition-delay:480ms;">
+        <div class="feature">
           <div class="feature-icon">&#128274;</div>
           <h4>Project Isolation</h4>
-          <p>Each project has its own vector space. No cross-contamination between products, tenants, or environments.</p>
+          <p>Each project has its own vector space. No cross-contamination between products or environments.</p>
         </div>
-        <div class="feature reveal" style="transition-delay:560ms;">
+        <div class="feature">
           <div class="feature-icon">&#128640;</div>
           <h4>One API Call</h4>
-          <p>Single POST returns ranked chunks + a ready-to-use context string. No client-side ranking or assembly needed.</p>
+          <p>Single POST returns ranked chunks + ready-to-use context string. No client-side assembly.</p>
         </div>
-        <div class="feature reveal" style="transition-delay:640ms;">
+        <div class="feature">
           <div class="feature-icon">&#128736;</div>
           <h4>Web Dashboard</h4>
-          <p>Manage projects, sources, and monitor queries from a clean web UI. No code needed for content operations.</p>
+          <p>Manage projects, sources, and queries from a clean web UI. No code needed for content ops.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <div class="section-divider"></div>
-
   <!-- Use Cases -->
   <section>
     <div class="section-inner">
       <div class="section-label reveal">Use Cases</div>
-      <div class="section-title reveal">Built for teams shipping AI products</div>
-      <div class="usecases-track">
+      <div class="section-title reveal">Built for teams shipping<br>AI products</div>
+      <div class="usecases-grid">
         <div class="usecase reveal" style="transition-delay:0ms;">
           <span class="usecase-tag support">Support</span>
           <h4>Customer support agents</h4>
@@ -481,23 +453,16 @@ system_prompt += ctx[<span class="str">"context_text"</span>]  <span class="cmt"
           <h4>Internal dev assistants</h4>
           <p>Index your codebase docs, runbooks, and architecture decisions. Engineering teams get instant, accurate answers about their own systems.</p>
         </div>
-        <div class="usecase reveal" style="transition-delay:300ms;">
-          <span class="usecase-tag support">Product</span>
-          <h4>In-app AI copilots</h4>
-          <p>Ship an AI copilot inside your SaaS that actually understands your product. Contextual help that scales without hiring more support staff.</p>
-        </div>
       </div>
     </div>
   </section>
 
-  <div class="section-divider"></div>
-
   <!-- Pricing -->
-  <section id="pricing">
+  <section id="pricing" style="background: var(--bg-white);">
     <div class="section-inner">
       <div class="section-label reveal">Pricing</div>
-      <div class="section-title reveal">Start free. Scale when ready.</div>
-      <div class="section-desc reveal">No credit card. No surprise bills. Upgrade when your agent gets popular.</div>
+      <div class="section-title reveal">Start free.<br>Scale when ready.</div>
+      <div class="section-desc reveal">No credit card. No surprise bills.</div>
       <div class="pricing-grid">
         <div class="price-card reveal" style="transition-delay:0ms;">
           <div class="price-tier">Free</div>
@@ -511,7 +476,7 @@ system_prompt += ctx[<span class="str">"context_text"</span>]  <span class="cmt"
             <li>Hybrid search</li>
             <li>Community support</li>
           </ul>
-          <button class="btn btn-secondary" onclick="openSignup('free')">Get Started</button>
+          <button class="btn btn-secondary btn-pill" onclick="openSignup('free')">Get Started</button>
         </div>
         <div class="price-card featured reveal" style="transition-delay:100ms;">
           <div class="price-tier">Pro</div>
@@ -527,7 +492,7 @@ system_prompt += ctx[<span class="str">"context_text"</span>]  <span class="cmt"
             <li>Query analytics</li>
             <li>Email support</li>
           </ul>
-          <button class="btn btn-primary" onclick="openSignup('pro')">Start Free Trial</button>
+          <button class="btn btn-accent btn-pill" onclick="openSignup('pro')">Start Free Trial</button>
         </div>
         <div class="price-card reveal" style="transition-delay:200ms;">
           <div class="price-tier">Scale</div>
@@ -543,7 +508,7 @@ system_prompt += ctx[<span class="str">"context_text"</span>]  <span class="cmt"
             <li>Custom re-ranking</li>
             <li>Priority support</li>
           </ul>
-          <button class="btn btn-secondary" onclick="openSignup('scale')">Start Free Trial</button>
+          <button class="btn btn-secondary btn-pill" onclick="openSignup('scale')">Start Free Trial</button>
         </div>
         <div class="price-card reveal" style="transition-delay:300ms;">
           <div class="price-tier">Enterprise</div>
@@ -559,7 +524,7 @@ system_prompt += ctx[<span class="str">"context_text"</span>]  <span class="cmt"
             <li>Dedicated account manager</li>
             <li>On-prem option</li>
           </ul>
-          <a href="mailto:hello@restext.dev" class="btn btn-secondary">Contact Sales</a>
+          <a href="mailto:hello@restext.dev" class="btn btn-secondary btn-pill">Contact Sales</a>
         </div>
       </div>
     </div>
@@ -567,10 +532,10 @@ system_prompt += ctx[<span class="str">"context_text"</span>]  <span class="cmt"
 
   <!-- CTA -->
   <section class="cta-section">
-    <h2 class="reveal">Ready to give your agent a brain?</h2>
+    <h2 class="reveal">Ready to give your<br>agent a brain?</h2>
     <p class="reveal">Free tier. No credit card. API key in 10 seconds.</p>
     <div class="reveal">
-      <button class="btn btn-primary btn-lg" onclick="openSignup()">Get Free API Key</button>
+      <button class="btn btn-accent btn-lg btn-pill" onclick="openSignup()">Get Free API Key</button>
     </div>
   </section>
 
@@ -595,7 +560,7 @@ system_prompt += ctx[<span class="str">"context_text"</span>]  <span class="cmt"
         <div class="signup-form">
           <input type="text" id="signupName" placeholder="Your name" />
           <input type="email" id="signupEmail" placeholder="you@company.com" />
-          <button class="btn btn-primary" onclick="submitSignup()" id="signupBtn">Create Account</button>
+          <button class="btn btn-primary btn-pill" onclick="submitSignup()" id="signupBtn">Create Account</button>
         </div>
         <p style="font-size:12px;color:var(--text-3);margin-top:16px;">By signing up you agree to our terms of service.</p>
       </div>
@@ -610,15 +575,14 @@ system_prompt += ctx[<span class="str">"context_text"</span>]  <span class="cmt"
           <li>Copy your API key above</li>
           <li>Go to the <a href="/dashboard" style="color:var(--accent);">Dashboard</a> and paste it in Settings</li>
           <li>Create your first project and add a source</li>
-          <li>Run your first query &mdash; that's it!</li>
+          <li>Run your first query</li>
         </ol>
-        <a href="/dashboard" class="btn btn-primary" style="width:100%;margin-top:20px;">Open Dashboard</a>
+        <a href="/dashboard" class="btn btn-primary btn-pill" style="width:100%;margin-top:20px;">Open Dashboard</a>
       </div>
-      <button onclick="closeSignup()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text-3);cursor:pointer;font-size:22px;line-height:1;">&times;</button>
+      <button onclick="closeSignup()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text-3);cursor:pointer;font-size:24px;line-height:1;">&times;</button>
     </div>
   </div>
 
-  <!-- Three.js for wireframe sphere -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
     // ===== 3D Wireframe Sphere =====
@@ -626,35 +590,35 @@ system_prompt += ctx[<span class="str">"context_text"</span>]  <span class="cmt"
       const canvas = document.getElementById('heroCanvas');
       const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setClearColor(0x000000, 0);
 
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-      camera.position.z = 4.5;
+      camera.position.z = 5;
 
-      // Icosahedron wireframe
-      const geo = new THREE.IcosahedronGeometry(1.6, 3);
-      const mat = new THREE.MeshBasicMaterial({ color: 0x3b82f6, wireframe: true, transparent: true, opacity: 0.12 });
+      // Main wireframe sphere
+      const geo = new THREE.IcosahedronGeometry(1.8, 4);
+      const mat = new THREE.MeshBasicMaterial({ color: 0x3030ee, wireframe: true, transparent: true, opacity: 0.08 });
       const sphere = new THREE.Mesh(geo, mat);
       scene.add(sphere);
 
       // Inner sphere
-      const geo2 = new THREE.IcosahedronGeometry(1.2, 2);
-      const mat2 = new THREE.MeshBasicMaterial({ color: 0x22d3ee, wireframe: true, transparent: true, opacity: 0.06 });
+      const geo2 = new THREE.IcosahedronGeometry(1.3, 2);
+      const mat2 = new THREE.MeshBasicMaterial({ color: 0x3030ee, wireframe: true, transparent: true, opacity: 0.04 });
       const sphere2 = new THREE.Mesh(geo2, mat2);
       scene.add(sphere2);
 
-      // Particle dots at vertices
+      // Dots
       const dotGeo = new THREE.BufferGeometry();
-      const positions = geo.attributes.position.array;
-      dotGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-      const dotMat = new THREE.PointsMaterial({ color: 0x60a5fa, size: 0.02, transparent: true, opacity: 0.5 });
+      dotGeo.setAttribute('position', new THREE.Float32BufferAttribute(geo.attributes.position.array, 3));
+      const dotMat = new THREE.PointsMaterial({ color: 0x3030ee, size: 0.015, transparent: true, opacity: 0.25 });
       const dots = new THREE.Points(dotGeo, dotMat);
       scene.add(dots);
 
       let mouseX = 0, mouseY = 0;
       document.addEventListener('mousemove', (e) => {
-        mouseX = (e.clientX / window.innerWidth - 0.5) * 0.5;
-        mouseY = (e.clientY / window.innerHeight - 0.5) * 0.5;
+        mouseX = (e.clientX / window.innerWidth - 0.5) * 0.4;
+        mouseY = (e.clientY / window.innerHeight - 0.5) * 0.4;
       });
 
       function resize() {
@@ -667,30 +631,24 @@ system_prompt += ctx[<span class="str">"context_text"</span>]  <span class="cmt"
       resize();
       window.addEventListener('resize', resize);
 
-      // Scroll-based opacity
       let scrollOpacity = 1;
       window.addEventListener('scroll', () => {
-        const t = window.scrollY / window.innerHeight;
-        scrollOpacity = Math.max(0, 1 - t * 1.5);
+        scrollOpacity = Math.max(0, 1 - (window.scrollY / window.innerHeight) * 1.2);
       });
 
       function animate() {
         requestAnimationFrame(animate);
-        sphere.rotation.y += 0.002;
-        sphere.rotation.x += 0.001;
-        sphere2.rotation.y -= 0.003;
-        sphere2.rotation.x -= 0.001;
+        sphere.rotation.y += 0.0015;
+        sphere.rotation.x += 0.0008;
+        sphere2.rotation.y -= 0.002;
+        sphere2.rotation.x -= 0.0005;
         dots.rotation.y = sphere.rotation.y;
         dots.rotation.x = sphere.rotation.x;
-
-        // Mouse parallax
-        sphere.rotation.y += mouseX * 0.01;
-        sphere.rotation.x += mouseY * 0.01;
-
-        mat.opacity = 0.12 * scrollOpacity;
-        mat2.opacity = 0.06 * scrollOpacity;
-        dotMat.opacity = 0.5 * scrollOpacity;
-
+        sphere.rotation.y += mouseX * 0.008;
+        sphere.rotation.x += mouseY * 0.008;
+        mat.opacity = 0.08 * scrollOpacity;
+        mat2.opacity = 0.04 * scrollOpacity;
+        dotMat.opacity = 0.25 * scrollOpacity;
         renderer.render(scene, camera);
       }
       animate();
@@ -699,80 +657,48 @@ system_prompt += ctx[<span class="str">"context_text"</span>]  <span class="cmt"
     // ===== Scroll Reveal =====
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
+        if (entry.isIntersecting) entry.target.classList.add('visible');
       });
-    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-
+    }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
     document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(el => observer.observe(el));
-
-    // ===== Parallax on scroll for how-visual-cards =====
-    window.addEventListener('scroll', () => {
-      const cards = document.querySelectorAll('.how-visual-card');
-      cards.forEach(card => {
-        const rect = card.getBoundingClientRect();
-        const center = rect.top + rect.height / 2;
-        const viewCenter = window.innerHeight / 2;
-        const offset = (center - viewCenter) / window.innerHeight;
-        card.style.transform = `translateY(${offset * -20}px)`;
-      });
-    });
 
     // ===== Signup =====
     let selectedPlan = 'free';
-
     function openSignup(plan) {
       selectedPlan = plan || 'free';
       document.getElementById('signupModal').classList.add('open');
       document.getElementById('signupFormView').style.display = 'block';
       document.getElementById('signupSuccessView').style.display = 'none';
     }
-
-    function closeSignup() {
-      document.getElementById('signupModal').classList.remove('open');
-    }
+    function closeSignup() { document.getElementById('signupModal').classList.remove('open'); }
 
     async function submitSignup() {
       const name = document.getElementById('signupName').value.trim();
       const email = document.getElementById('signupEmail').value.trim();
       if (!name || !email) { alert('Please fill in all fields'); return; }
       if (!email.includes('@')) { alert('Please enter a valid email'); return; }
-
       const btn = document.getElementById('signupBtn');
-      btn.disabled = true;
-      btn.textContent = 'Creating...';
-
+      btn.disabled = true; btn.textContent = 'Creating...';
       try {
-        const base = window.location.origin;
-        const res = await fetch(base + '/signup', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const res = await fetch(location.origin + '/signup', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, plan: selectedPlan }),
         });
         const data = await res.json();
-
         if (data.error) { alert(data.error); return; }
-
         document.getElementById('apiKeyText').textContent = data.api_key;
         document.getElementById('signupFormView').style.display = 'none';
         document.getElementById('signupSuccessView').style.display = 'block';
-
         localStorage.setItem('restext_key', data.api_key);
-        localStorage.setItem('restext_url', window.location.origin);
-      } catch (e) {
-        alert('Error: ' + e.message);
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Create Account';
-      }
+        localStorage.setItem('restext_url', location.origin);
+      } catch (e) { alert('Error: ' + e.message); }
+      finally { btn.disabled = false; btn.textContent = 'Create Account'; }
     }
 
     function copyKey() {
-      const key = document.getElementById('apiKeyText').textContent;
-      navigator.clipboard.writeText(key);
+      navigator.clipboard.writeText(document.getElementById('apiKeyText').textContent);
       document.querySelector('.copy-btn').textContent = 'Copied!';
-      setTimeout(() => { document.querySelector('.copy-btn').textContent = 'Copy'; }, 2000);
+      setTimeout(() => document.querySelector('.copy-btn').textContent = 'Copy', 2000);
     }
 
     document.getElementById('signupModal').addEventListener('click', function(e) {
