@@ -162,8 +162,17 @@ async def _ingest_source(source_id: uuid.UUID, text_content: str | None = None):
                         },
                     })
 
+                # Commit chunks to Postgres FIRST (so they're available for fallback search)
+                await db.commit()
+                print(f"[INGESTION] Committed {len(chunks_to_embed)} chunks to Postgres", flush=True)
+
+                # Then try Qdrant (non-fatal — fallback search still works without vectors)
                 if qdrant_points:
-                    await upsert_vectors(source.project_id, qdrant_points)
+                    try:
+                        await upsert_vectors(source.project_id, qdrant_points)
+                        print(f"[INGESTION] Upserted {len(qdrant_points)} vectors to Qdrant", flush=True)
+                    except Exception as e:
+                        print(f"[INGESTION] Qdrant upsert failed (non-fatal, Postgres fallback active): {type(e).__name__}: {e}", flush=True)
 
             # Step 7: Update source status
             total_chunks = await db.scalar(
